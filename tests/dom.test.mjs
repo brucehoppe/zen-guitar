@@ -186,3 +186,36 @@ test("renderBalance tilts the beam toward the selected pan and levels for an oth
   assert.equal(balances[0].classList.contains("is-tilt-right"), false);
   assert.equal(balances[0].classList.contains("is-tilt-left"), false);
 });
+
+const { renderTabs } = await import("../site/render/tabs.js");
+const { renderCards } = await import("../site/render/cards.js");
+const { renderMountains } = await import("../site/render/mountains.js");
+
+test("renderTabs exposes tabs, shows one panel, and switches on click", () => {
+  const tab = (id, n) => ({ id, label: id, intro: "x", section: { type: "table", id, heading: id, columns: ["L", "C"], rows: Array.from({ length: n }, (_, i) => ({ cells: [`${id}${i}`, "c"] })) } });
+  const t = renderTabs({ type: "tabs", id: "hhh", heading: "HHH", tabs: [tab("head", 2), tab("hand", 1), tab("heart", 1)] }, ctx);
+  const tabs = t.querySelectorAll("button[role=\"tab\"]");
+  assert.equal(tabs.length, 3);
+  assert.equal(tabs[0].getAttribute("aria-selected"), "true");
+  const panels = t.querySelectorAll("div[role=\"tabpanel\"]");
+  assert.equal(panels.filter((p) => !p.hidden).length, 1);
+  tabs[1].dispatch("click");
+  assert.equal(tabs[1].getAttribute("aria-selected"), "true");
+  assert.ok(panels[0].hidden && !panels[1].hidden);
+});
+
+test("renderCards flips on click and reports aria-pressed", () => {
+  const c = renderCards({ type: "cards", id: "dualities", heading: "Six", items: [{ lesson: "silence", front: "Sound and silence", back: "Every silence equals every sound." }] }, ctx);
+  const card = c.querySelector("button.card");
+  assert.equal(card.getAttribute("aria-pressed"), "false");
+  card.dispatch("click");
+  assert.equal(card.getAttribute("aria-pressed"), "true");
+  assert.ok(card.classList.contains("is-flipped"));
+  assert.match(c.textContent, /Every silence/);
+});
+
+test("renderMountains draws three captioned figures", () => {
+  const m = renderMountains({ type: "mountains", id: "mountains", heading: "Mountain", items: [1, 2, 3].map((i) => ({ caption: `M${i}`, text: `T${i}` })) }, ctx);
+  assert.equal(m.querySelectorAll("figure").length, 3);
+  assert.match(m.textContent, /M3/);
+});
