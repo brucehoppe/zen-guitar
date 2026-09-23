@@ -246,24 +246,27 @@ test("maxims trace back to their stage on focus and clear on blur", () => {
   const m = renderMaxims({ type: "maxims", id: "maxims", heading: "The Way" }, c);
   const items = m.querySelectorAll("li.maxim");
   assert.equal(items.length, 2);
-  items[0].dispatch("focus");
+  const link = items[0].querySelector("a");
+  assert.equal(link.getAttribute("href"), "#/2/missteps");
+  link.dispatch("focus");
   assert.deepEqual(calls, [2]);
   assert.match(m.querySelector(".trace").textContent, /Speed/);
-  items[0].dispatch("blur");
+  link.dispatch("blur");
   assert.deepEqual(calls, [2, null]);
   assert.match(m.querySelector(".trace").textContent, /Last traced:.*Speed/);
-  assert.equal(items[1].getAttribute("tabindex"), null, "untraceable maxims are not focusable");
+  assert.equal(m.querySelector(".trace").querySelector("a"), null, "the trace line is text only, not a link");
+  assert.equal(items[1].querySelector("a"), null, "untraceable maxims are not links");
 });
 
 test("maxims trace back to their stage on mouseenter and clear on mouseleave", () => {
   const calls = [];
   const c = { ...ctx, lessons: { speed: { stage: 2, section: "missteps", label: "Speed" } }, maxims: [{ text: "Be quick, not hasty.", lesson: "speed" }], highlightStage: (n) => calls.push(n) };
   const m = renderMaxims({ type: "maxims", id: "maxims", heading: "The Way" }, c);
-  const item = m.querySelector("li.maxim");
-  item.dispatch("mouseenter");
+  const link = m.querySelector("a");
+  link.dispatch("mouseenter");
   assert.deepEqual(calls, [2]);
   assert.match(m.querySelector(".trace").textContent, /Speed/);
-  item.dispatch("mouseleave");
+  link.dispatch("mouseleave");
   assert.deepEqual(calls, [2, null]);
   assert.match(m.querySelector(".trace").textContent, /Last traced:.*Speed/);
 });

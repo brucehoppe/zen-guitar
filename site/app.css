@@ -17,7 +17,7 @@
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; background: var(--paper); color: var(--ink); font: 17px/1.55 var(--serif); }
-a { color: var(--accent); }
+a { color: var(--accent-text); }
 .top { display: flex; justify-content: space-between; align-items: baseline; padding: 14px var(--gutter); font-family: var(--sans); font-size: 14px; letter-spacing: .04em; }
 .top-home { color: inherit; text-decoration: none; font-weight: 600; }
 .top-nav a { color: inherit; text-decoration: none; margin-left: 18px; opacity: .7; }
@@ -158,11 +158,12 @@ a { color: var(--accent); }
 }
 
 .maxims { list-style: none; padding: 0; }
-.maxim { padding: 6px 0; border-top: 1px solid var(--rule); font-size: 18px; line-height: 1.6; }
-.maxim[tabindex] { cursor: default; }
-.maxim[tabindex]::before { content: "· "; color: var(--muted); }
-.maxim[tabindex]:hover, .maxim[tabindex]:focus-visible { color: var(--accent-text); text-decoration: underline; text-underline-offset: .2em; box-shadow: inset 3px 0 0 var(--accent); }
-.maxim[tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.maxim { padding: 6px 0; padding-left: 1em; text-indent: -1em; border-top: 1px solid var(--rule); font-size: 18px; line-height: 1.6; }
+.maxim[data-lesson]::before { content: "· "; color: var(--muted); }
+.maxim a { color: inherit; text-decoration: none; }
+.maxim[data-lesson]:hover, .maxim[data-lesson]:focus-within { box-shadow: inset 3px 0 0 var(--accent); }
+.maxim[data-lesson] a:hover, .maxim[data-lesson] a:focus-visible { color: var(--accent-text); text-decoration: underline; text-underline-offset: .2em; }
+.maxim[data-lesson] a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .trace { font: 13px var(--sans); color: var(--muted); min-height: 1.4em; }
 .filter-label { display: block; font: 12px var(--sans); color: var(--muted); margin: 0 0 4px; }
 .filter { font: 15px var(--serif); padding: 8px 12px; border: 1px solid var(--rule); border-radius: 6px; background: var(--paper); color: var(--ink); width: 100%; max-width: 320px; margin: 0 0 14px; }

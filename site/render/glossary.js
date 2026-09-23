@@ -5,7 +5,7 @@ export function renderGlossary(ctx) {
   const rows = ctx.glossary.map((g) => el("tr", { "data-term": g.term.toLowerCase() }, [
     el("th", { scope: "row" }, [g.term, kanji(g.kanji)]), el("td", {}, [g.literal]), el("td", {}, [g.usage])]));
   const searchText = ctx.glossary.map((g) => [g.term, g.kanji, g.literal, g.usage].filter(Boolean).join(" ").toLowerCase());
-  const input = el("input", { type: "search", id: "glossary-filter", class: "filter", placeholder: "Filter terms" });
+  const input = el("input", { type: "search", id: "glossary-filter", class: "filter" });
   const status = el("p", { class: "muted small", role: "status" }, [`${rows.length} terms`]);
   input.addEventListener("input", () => {
     const q = input.value.trim().toLowerCase();
