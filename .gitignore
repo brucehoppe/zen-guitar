@@ -1,0 +1,9 @@
+.DS_Store
+node_modules/
+*.zip
+
+# Duplicate of zen_guitar/Zen-Guitar-Study-Guide.pdf
+/Zen-Guitar-Study-Guide.pdf
+
+# Brainstorming mockups
+.superpowers/
