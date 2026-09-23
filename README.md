@@ -1,5 +1,8 @@
 # Zen Guitar journey
 
+![Rats of Chaos present: Music Through the Noise. A two-ink poster: a guitar and a teacup on a quiet porch facing pine, mountains and a red sun on the left; a city, traffic and stacked amplifiers on the right. Practice, listen, tune, play, repeat.](docs/images/rats-of-chaos-poster.jpg)
+
+
 **Live demo:** https://brucehoppe.github.io/zen-guitar/ (coming once the site is built)
 
 A visual tour of *Zen Guitar* by **Philip Toshio Sudo** (Simon & Schuster, 1997),
