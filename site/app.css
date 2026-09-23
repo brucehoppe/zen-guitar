@@ -158,7 +158,7 @@ a { color: var(--accent-text); }
 }
 
 .maxims { list-style: none; padding: 0; }
-.maxim { padding: 6px 0; border-top: 1px solid var(--rule); font-size: 18px; line-height: 1.6; }
+.maxim { padding: 6px 0; padding-left: 1em; text-indent: -1em; border-top: 1px solid var(--rule); font-size: 18px; line-height: 1.6; }
 .maxim::before { display: inline-block; width: 1em; content: ""; }
 .maxim[data-lesson]::before { content: "· "; color: var(--muted); }
 .maxim a { color: inherit; text-decoration: none; }
@@ -171,14 +171,18 @@ a { color: var(--accent-text); }
 .practice { padding-left: 1.1em; } .practice li { margin: 8px 0; }
 .trains-tag { font: 12px var(--sans); color: var(--accent-text); }
 
+.test-yourself { border-top: 1px solid var(--rule); padding: 8px 0; } .test-yourself summary { cursor: pointer; }
 .match { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; }
-@media (max-width: 560px) { .match { grid-template-columns: 1fr; } }
+@media (max-width: 560px) {
+  .match { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .match-img, .match-lesson { font-size: 14px; padding: 6px 8px; }
+}
 .match-col { display: flex; flex-direction: column; gap: 6px; }
 .match-img, .match-lesson { font: 15px var(--serif); text-align: left; background: none; border: 1px solid var(--rule); border-radius: 6px; padding: 8px 10px; color: var(--ink); cursor: pointer; transition: border-color var(--ease); }
 .match-img.is-selected { border-color: var(--accent-text); color: var(--accent-text); font-weight: 600; background: color-mix(in srgb, var(--accent) 10%, transparent); }
-.is-matched { border-color: var(--accent-text); opacity: .55; }
-.is-matched::after { content: " ✓"; color: var(--accent-text); }
-.is-wrong { animation: shake 400ms; border-color: var(--accent-text); }
+.match .is-matched { border-color: var(--accent-text); opacity: .55; }
+.match .is-matched::after { content: " ✓"; color: var(--accent-text); }
+.match .is-wrong { animation: shake 400ms; border-color: var(--accent-text); }
 @keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
 .match-status { font: 13px var(--sans); color: var(--muted); }
 .match-img:focus-visible, .match-lesson:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

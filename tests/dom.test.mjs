@@ -298,15 +298,34 @@ test("practice groups exercises by belt in order and links each trains-tag to it
 });
 
 const { renderMatch } = await import("../site/render/match.js");
-test("match locks correct pairs and clears wrong ones", () => {
+test("match locks correct pairs into an answer key, removes the lesson choice, and clears wrong ones", () => {
   const c = { ...ctx, lessons: { a: { stage: 1, section: "s", label: "Alpha" }, b: { stage: 2, section: "s", label: "Beta" } }, shuffle: (x) => x };
   const m = renderMatch({ type: "match", id: "match", heading: "Match", items: [{ image: "Teacup", lesson: "a" }, { image: "Bulb", lesson: "b" }] }, c);
   const imgs = m.querySelectorAll("button.match-img"), les = m.querySelectorAll("button.match-lesson");
+  assert.equal(les[0].hasAttribute("aria-pressed"), false, "lesson buttons carry no aria-pressed");
   imgs[0].dispatch("click"); les[1].dispatch("click");           // wrong
   assert.ok(les[1].classList.contains("is-wrong"));
   assert.ok(!imgs[0].classList.contains("is-selected"));
   imgs[0].dispatch("click"); les[0].dispatch("click");           // right
-  assert.ok(imgs[0].classList.contains("is-matched") && les[0].classList.contains("is-matched"));
+  assert.ok(imgs[0].classList.contains("is-matched"));
   assert.equal(imgs[0].getAttribute("disabled"), "");
+  assert.equal(imgs[0].textContent, "Teacup → Alpha");
+  assert.equal(m.querySelectorAll("button.match-lesson").length, 1, "the matched lesson button is removed");
   assert.match(m.querySelector(".match-status").textContent, /1 of 2/);
+});
+
+test("match reports choosing a lesson before an image", () => {
+  const c = { ...ctx, lessons: { a: { stage: 1, section: "s", label: "Alpha" } }, shuffle: (x) => x };
+  const m = renderMatch({ type: "match", id: "match", heading: "Match", items: [{ image: "Teacup", lesson: "a" }] }, c);
+  m.querySelector("button.match-lesson").dispatch("click");
+  assert.equal(m.querySelector(".match-status").textContent, "Choose an image first.");
+});
+
+test("match's completion text is hard-coded regardless of item count", () => {
+  const c = { ...ctx, lessons: { a: { stage: 1, section: "s", label: "Alpha" }, b: { stage: 2, section: "s", label: "Beta" } }, shuffle: (x) => x };
+  const m = renderMatch({ type: "match", id: "match", heading: "Match", items: [{ image: "Teacup", lesson: "a" }, { image: "Bulb", lesson: "b" }] }, c);
+  const imgs = m.querySelectorAll("button.match-img"), les = m.querySelectorAll("button.match-lesson");
+  imgs[0].dispatch("click"); les[0].dispatch("click");
+  imgs[1].dispatch("click"); les[1].dispatch("click");
+  assert.equal(m.querySelector(".match-status").textContent, "All ten. Now go play.");
 });
