@@ -40,6 +40,7 @@ export function buildRing(svgEl, { stages, onSelect }) {
   markerPositions(stages.length, R, CX, CY).forEach((p, i) => {
     const stage = stages[i];
     const g = svg("g", { class: "marker", role: "button", tabindex: "0", "aria-label": `Stage ${stage.id}: ${stage.title}`, "data-stage": stage.id, transform: `translate(${p.x} ${p.y})` }, [
+      svg("circle", { r: 34, fill: "transparent", class: "marker-hit" }), // touch target; the dot sits above it
       svg("circle", { r: 9, class: "marker-dot" }),
       svg("text", { class: "marker-n", "text-anchor": "middle" }, [String(stage.id)]),
     ]);

@@ -25,6 +25,15 @@ test("setStage marks the current marker and turns the rotor", () => {
   assert.match(rotor.getAttribute("transform"), /rotate\(-72/);
 });
 
+test("each marker has an invisible hit circle drawn beneath its dot", () => {
+  const { marker } = setup();
+  for (const n of [1, 2, 3, 4, 5]) {
+    const hit = marker(n).querySelector("circle.marker-hit");
+    assert.ok(hit, `marker ${n}`);
+    assert.equal(marker(n).children[0], hit);
+  }
+});
+
 test("stage 5 to stage 1 turns one step forward, not back around the ring", () => {
   const { ring, angle } = setup();
   ring.setStage(5);
