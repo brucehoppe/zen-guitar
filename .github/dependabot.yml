@@ -1,0 +1,11 @@
+# The site has no npm packages, so the only thing that can go stale is the set
+# of pinned GitHub Actions in .github/workflows.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
