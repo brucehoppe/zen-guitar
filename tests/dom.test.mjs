@@ -85,3 +85,15 @@ test("renderStage falls back to a heading paragraph for an unknown section type"
   assert.match(out.textContent, /Mystery/);
   assert.ok(out.querySelector("section.sec-fallback"));
 });
+
+test("renderRecall leaves out the Recall section when there is nothing to recall", () => {
+  const r = renderRecall({ recall: [], reflection: ["Who are you?"] });
+  assert.equal(r.querySelector("section.sec-recall"), null);
+  assert.ok(r.querySelector("section.sec-reflect"));
+});
+
+test("renderStage has no stage counter and a focusable title", () => {
+  const out = renderStage({ id: 2, title: "T", subtitle: "S", intro: "I", sections: [], recall: [], reflection: [] }, ctx);
+  assert.equal(out.querySelector("p.eyebrow"), null);
+  assert.equal(out.querySelector("h2").getAttribute("tabindex"), "-1");
+});

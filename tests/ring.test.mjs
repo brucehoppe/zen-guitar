@@ -31,3 +31,8 @@ test("beltPath draws a half circle arc", () => {
   assert.match(p, /^M200 58 A142 142 0 0 1 200 342$/);
   assert.match(beltPath(142, 200, 200, "left"), /^M200 342 A142 142 0 0 1 200 58$/);
 });
+
+test("beltPath with overlap extends each half past the seam", () => {
+  assert.match(beltPath(142, 200, 200, "right", 3), /^M192\.568 58\.195 A142 142 0 1 1 192\.568 341\.805$/);
+  assert.match(beltPath(142, 200, 200, "left", 3), /^M207\.432 341\.805 A142 142 0 1 1 207\.432 58\.195$/);
+});

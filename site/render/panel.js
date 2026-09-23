@@ -17,8 +17,7 @@ function fallback(section) {
 
 export function renderStage(stage, ctx) {
   const head = el("header", { class: "stage-head" }, [
-    el("p", { class: "eyebrow" }, [`Stage ${stage.id} of 5`]),
-    el("h2", { class: "stage-title" }, [stage.title]),
+    el("h2", { class: "stage-title", tabindex: "-1" }, [stage.title]),
     el("p", { class: "stage-sub" }, [stage.subtitle]),
     el("p", { class: "intro" }, [stage.intro]),
   ]);

@@ -10,11 +10,12 @@ export function parseHash(hash) {
   const n = Number.parseInt(parts[0], 10);
   const stage = Number.isInteger(n) && n >= 1 && n <= STAGES ? n : 1;
   const section = parts.length === 2 && parts[1] ? parts[1] : null;
-  return { view: "stage", stage, section, again };
+  return { view: "stage", stage, section, again, landing: parts.length === 0 };
 }
 
 export function buildHash(route) {
   if (route.view !== "stage") return `#/${route.view}`;
+  if (route.landing) return route.again ? "#/?again" : "#/";
   let h = `#/${route.stage}`;
   if (route.section) h += `/${route.section}`;
   if (route.again) h += "?again";
@@ -26,7 +27,8 @@ export function normalize(route, stages) {
   const stage = stages.find((s) => s.id === route.stage) ? route.stage : 1;
   const def = stages.find((s) => s.id === stage);
   const section = def && def.sections.some((s) => s.id === route.section) ? route.section : null;
-  return { view: "stage", stage, section, again: Boolean(route.again) };
+  if (route.landing) return { view: "stage", stage: 1, section: null, again: Boolean(route.again), landing: true };
+  return { view: "stage", stage, section, again: Boolean(route.again), landing: false };
 }
 
 export function nextStage(n) {

@@ -6,13 +6,22 @@ import { renderStage } from "./render/panel.js";
 import { el } from "./render/dom.js";
 
 const $ = (id) => document.getElementById(id);
-const ringEl = $("ring"), panelEl = $("panel"), viewEl = $("view"), stageEl = document.querySelector(".stage");
+const ringEl = $("ring"), panelEl = $("panel"), viewEl = $("view"), koanEl = $("koan"), stageEl = document.querySelector(".stage");
 const navLinks = [...document.querySelectorAll(".top-nav a")];
+const KOAN_MS = 1200;
 
-let route = normalize(parseHash(location.hash), stages);
-let lastStage = null;
+// location.hash updates as soon as it is set, before hashchange fires, so read it for the live route
+const current = () => normalize(parseHash(location.hash), stages);
+let route = current();
+let lastStage = null;   // stage id shown last, or null on the landing
+let lastPlace = null;   // "landing", a stage id, or a view name; null before the first render
+let keepFocus = false;  // true while a marker picked the stage, so focus stays on it
+let koanTimer = null;
 
-const ring = buildRing(ringEl, { stages, onSelect: (n) => go({ view: "stage", stage: n, section: null, again: route.again }) });
+const ring = buildRing(ringEl, {
+  stages,
+  onSelect: (n) => { keepFocus = true; go({ view: "stage", stage: n, section: null, again: current().again }); },
+});
 
 const ctx = {
   lessons,
@@ -24,46 +33,76 @@ const VIEWS = {}; // glossary and practice arrive in Task 11
 
 function go(next) {
   const target = buildHash(normalize(next, stages));
-  if (target === location.hash) render(); else location.hash = target;
+  if (target === buildHash(current())) { keepFocus = false; return; } // nothing changed: no re-render
+  location.hash = target;
 }
 
 function renderLanding() {
   const again = route.again;
   return el("article", { class: "stage-panel landing" }, [
-    el("h1", { class: "stage-title" }, ["Zen Guitar"]),
+    el("h1", { class: "stage-title", tabindex: "-1" }, ["Zen Guitar"]),
     el("p", { class: "stage-sub" }, ["A visual tour of the book by Philip Toshio Sudo"]),
     el("p", { class: "intro" }, [again
-      ? "You have walked the ring once. The belt is a little softer now; that is all that changes. Tie it on again and empty your cup."
-      : "Everyone in this dojo starts at white belt. The belt is never awarded; it turns black through years of use, then wears back to white. Walk the ring. Nothing is saved between visits: empty your cup each visit."]),
+      ? "You have walked the ring once. The belt is a little softer; that is all that changes. Empty your cup and begin again."
+      : "Everyone in this dojo starts at white belt. Nothing is saved between visits: empty your cup each visit."]),
     el("p", { class: "hint" }, [el("button", { class: "begin", onclick: () => go({ view: "stage", stage: 1, section: null, again }) }, [again ? "Begin again" : "Begin"]), " or press → to move around the belt."]),
   ]);
 }
 
+function announce(text) {
+  clearTimeout(koanTimer);
+  koanEl.textContent = text;
+}
+
 function render() {
-  route = normalize(parseHash(location.hash), stages);
+  route = current();
   navLinks.forEach((a) => a.setAttribute("aria-current", a.getAttribute("href") === `#/${route.view}` ? "page" : "false"));
 
   if (route.view !== "stage") {
     stageEl.hidden = true; viewEl.hidden = false;
     viewEl.replaceChildren((VIEWS[route.view] ?? (() => el("p", {}, ["Coming soon."])))(ctx));
+    lastPlace = route.view; lastStage = null; keepFocus = false;
     return;
   }
   stageEl.hidden = false; viewEl.hidden = true;
+  const atLanding = route.landing;
   const stage = stages.find((s) => s.id === route.stage);
+  const place = atLanding ? "landing" : stage.id;
+  const moved = lastPlace !== null && lastPlace !== place;
+
+  stageEl.classList.toggle("in-stage", !atLanding);
   ring.setWorn(route.again);
   ring.setStage(route.stage);
-  const atLanding = location.hash === "" || location.hash === "#/" || location.hash === "#" ;
   panelEl.replaceChildren(atLanding ? renderLanding() : renderStage(stage, ctx));
   panelEl.setAttribute("data-emblem", atLanding ? "" : stage.emblem);
-  if (!atLanding && lastStage !== null && lastStage !== stage.id) ring.showKoan(stage.koan);
+
+  if (moved) announce(atLanding ? "Zen Guitar" : stage.title);
+  if (!atLanding && lastStage !== null && lastStage !== stage.id && ring.showKoan(stage.koan, KOAN_MS)) {
+    announce(stage.koan);
+    koanTimer = setTimeout(() => { koanEl.textContent = ""; }, KOAN_MS);
+  }
   lastStage = atLanding ? null : stage.id;
+  lastPlace = place;
+
   if (route.section) document.getElementById(`sec-${route.section}`)?.scrollIntoView({ block: "start" });
+  else if (moved) {
+    window.scrollTo(0, 0);
+    if (!keepFocus) panelEl.querySelector(atLanding ? "h1" : "h2")?.focus({ preventScroll: true });
+  }
+  keepFocus = false;
 }
 
 window.addEventListener("hashchange", render);
 window.addEventListener("keydown", (e) => {
-  if (route.view !== "stage" || e.target.closest?.("input, textarea")) return;
-  if (e.key === "ArrowRight") { const n = nextStage(route.stage); go({ view: "stage", stage: n.stage, section: null, again: route.again || n.again }); }
+  const route = current();
+  if (route.view !== "stage" || e.altKey || e.metaKey || e.ctrlKey || e.defaultPrevented) return;
+  if (e.target.closest?.("input, textarea")) return;
+  if (e.key === "ArrowRight") {
+    if (route.landing) { go({ view: "stage", stage: 1, section: null, again: route.again }); return; }
+    const n = nextStage(route.stage);
+    if (n.again) go({ view: "stage", stage: 1, section: null, again: true, landing: true });
+    else go({ view: "stage", stage: n.stage, section: null, again: route.again });
+  }
   if (e.key === "ArrowLeft") { const n = prevStage(route.stage); go({ view: "stage", stage: n.stage, section: null, again: route.again }); }
 });
 render();

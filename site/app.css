@@ -35,11 +35,10 @@ a { color: var(--accent); }
   .ring-wrap { position: static; width: 150px; margin: 0 auto; }
 }
 
-.stitch { fill: none; stroke: var(--ink); stroke-opacity: .18; stroke-dasharray: 3 5; }
-.rotor { transition: transform var(--ease); transform-box: view-box; }
+.rotor { transition: transform var(--ease); transform-box: view-box; transform-origin: 200px 200px; }
 .marker { cursor: pointer; outline: none; }
 .marker-dot { fill: var(--paper); stroke: var(--ink); stroke-width: 1.5; transition: fill var(--ease), r var(--ease); }
-.marker-n { font: 600 11px var(--sans); fill: var(--ink); pointer-events: none; }
+.marker-n { font: 600 11px var(--sans); fill: var(--ink); dominant-baseline: central; pointer-events: none; }
 .marker.is-current .marker-dot { fill: var(--accent); stroke: var(--accent); r: 11; }
 .marker.is-current .marker-n { fill: #fff; }
 .marker.is-hot .marker-dot { stroke: var(--accent); stroke-width: 3; }
@@ -49,8 +48,8 @@ a { color: var(--accent); }
 #ring.is-worn { filter: contrast(.92) saturate(.9); }
 .stage-panel { animation: rise var(--ease) both; position: relative; max-width: 65ch; }
 @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-.eyebrow { font: 600 11px/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 8px 0 6px; }
 .stage-title { font-size: 32px; font-weight: 500; margin: 0 0 4px; }
+.stage-title:focus { outline: none; } /* focused by script after a move, not a control */
 .stage-sub { font-style: italic; color: var(--muted); margin: 0 0 18px; }
 .intro { font-size: 17px; }
 .hint { font-family: var(--sans); font-size: 14px; color: var(--muted); }
@@ -67,3 +66,23 @@ a { color: var(--accent); }
 .plain { padding-left: 1.1em; } .plain li { margin: 6px 0; }
 .recall { border-top: 1px solid var(--rule); padding: 8px 0; } .recall summary { cursor: pointer; }
 .muted { color: var(--muted); }
+
+/* belt stops in dark mode; light mode keeps the wornStops colours set by setWorn */
+@media (prefers-color-scheme: dark) {
+  .belt-stop-0 { stop-color: #f6f1e7; }
+  .belt-stop-1 { stop-color: #8d877a; }
+  .belt-stop-2 { stop-color: #3a3733; }
+  #ring.is-worn .belt-stop-0 { stop-color: #f6f1e7; }
+  #ring.is-worn .belt-stop-1 { stop-color: #a39d90; }
+  #ring.is-worn .belt-stop-2 { stop-color: #4a4742; }
+}
+@media (min-width: 820px) {
+  .stage.in-stage { grid-template-columns: minmax(220px, 300px) 1fr; }
+  /* the HTML koan only speaks to screen readers here; the ring shows the koan */
+  .koan { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; }
+}
+@media (max-width: 819px) {
+  .koan-svg { display: none; }
+  .marker-dot, .marker.is-current .marker-dot { r: 20; }
+  .marker-n { font-size: 18px; }
+}

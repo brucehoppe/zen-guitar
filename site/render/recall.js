@@ -1,6 +1,6 @@
 import { el } from "./dom.js";
 export function renderRecall(stage) {
-  const recall = el("section", { class: "sec sec-recall", "aria-labelledby": "sec-recall" }, [
+  const recall = stage.recall.length === 0 ? null : el("section", { class: "sec sec-recall", "aria-labelledby": "sec-recall" }, [
     el("h3", { class: "sec-h", id: "sec-recall" }, ["Recall"]),
     ...stage.recall.map((r) => el("details", { class: "recall" }, [el("summary", {}, [r.q]), el("p", {}, [r.a])])),
   ]);
