@@ -235,3 +235,24 @@ deploy. The README's first line is the live demo link.
 The `zen-guitar/` folder is intended to become its own GitHub repository. The
 mono-repo's `.gitignore` will list it once that split happens, following the
 existing convention for nested repositories.
+
+## Addendum, 2026-09-23: enrichments agreed before planning
+
+- **Match the image.** Stage 5 gains a section `match` that shows the ten
+  images from the study guide's self-test (an overflowing teacup, a light bulb
+  replaced after class, and so on). The visitor clicks an image, then clicks a
+  lesson from a shuffled list. A correct pair locks in vermilion; a wrong pair
+  shakes once and clears. No score is kept, and reloading resets.
+- **Stage emblems.** Each stage has a monochrome ink-wash SVG emblem drawn
+  faintly behind its panel: 1 a teacup overflowing, 2 a clenched fist (shugyo),
+  3 an open hand, 4 a mountain behind cloud, 5 an enso. Emblems live in
+  `site/emblems.js` as SVG path strings and never carry text.
+- **Koan interludes.** On every stage change the ring's centre shows one line
+  for 1.2 s before the new stage's title: 1 "What is the sound of one hand
+  clapping?", 2 "Seven times down, eight times up.", 3 "Then wash your bowl.",
+  4 "Mountain is mountain.", 5 "Not yet." Under reduced motion the line is
+  skipped.
+- **Content files.** `site/content.js` becomes `site/content/index.js`
+  re-exporting `stages`, `glossary`, `exercises`, `maxims`, `lessons` from
+  `site/content/stage1.js` through `stage5.js`, `glossary.js`, `exercises.js`,
+  `maxims.js`, `lessons.js`. The exported shapes are unchanged.
