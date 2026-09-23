@@ -21,8 +21,9 @@ test("el builds attributes, text and listeners", () => {
 
 test("renderTable puts every cell in and tags lesson rows", () => {
   const t = renderTable({ type: "table", id: "ideas", heading: "Key ideas", columns: ["A", "B"], rows: [{ lesson: "empty-cup", cells: ["Empty cup", "Pour it out"] }] }, ctx);
-  assert.equal(t.querySelectorAll("th").length, 2);
-  assert.equal(t.querySelectorAll("td").length, 2);
+  assert.equal(t.querySelectorAll("th").length, 3);
+  assert.equal(t.querySelectorAll("td").length, 1);
+  assert.equal(t.querySelectorAll("th")[2].getAttribute("scope"), "row");
   assert.equal(t.querySelector("tr[data-lesson]").getAttribute("data-lesson"), "empty-cup");
   assert.match(t.textContent, /Pour it out/);
 });
