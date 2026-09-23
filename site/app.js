@@ -1,8 +1,10 @@
 // site/app.js
-import { stages, lessons, exercises } from "./content/index.js";
+import { stages, lessons, exercises, maxims, glossary } from "./content/index.js";
 import { parseHash, buildHash, normalize, nextStage, prevStage } from "./router.js";
 import { buildRing } from "./belt.js";
 import { renderStage } from "./render/panel.js";
+import { renderGlossary } from "./render/glossary.js";
+import { renderPractice } from "./render/practice.js";
 import { el } from "./render/dom.js";
 
 const $ = (id) => document.getElementById(id);
@@ -27,9 +29,12 @@ const ctx = {
   lessons,
   highlightStage: (n) => ring.highlight(n),
   exercisesFor: (lessonId) => exercises.filter((e) => e.lessons.includes(lessonId)),
+  maxims,
+  glossary,
+  exercises,
 };
 
-const VIEWS = {}; // glossary and practice arrive in Task 11
+const VIEWS = { glossary: renderGlossary, practice: renderPractice };
 
 function go(next) {
   const target = buildHash(normalize(next, stages));

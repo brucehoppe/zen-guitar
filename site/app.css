@@ -156,3 +156,13 @@ a { color: var(--accent); }
 @media (prefers-color-scheme: dark) {
   .card-front, .card-back { border-color: color-mix(in srgb, var(--ink) 35%, var(--paper)); }
 }
+
+.maxims { list-style: none; padding: 0; }
+.maxim { padding: 6px 0; border-top: 1px solid var(--rule); font-size: 18px; line-height: 1.6; }
+.maxim[tabindex] { cursor: default; }
+.maxim[tabindex]:hover, .maxim[tabindex]:focus-visible { color: var(--accent-text); outline: none; }
+.trace { font: 13px var(--sans); color: var(--muted); min-height: 1.4em; }
+.filter-label { display: block; font: 12px var(--sans); color: var(--muted); margin: 0 0 4px; }
+.filter { font: 15px var(--serif); padding: 8px 12px; border: 1px solid var(--rule); border-radius: 6px; background: var(--paper); color: var(--ink); width: 100%; max-width: 320px; margin: 0 0 14px; }
+.practice { padding-left: 1.1em; } .practice li { margin: 8px 0; }
+.trains-tag { font: 12px var(--sans); color: var(--accent-text); }

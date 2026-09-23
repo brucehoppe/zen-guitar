@@ -235,3 +235,40 @@ test("renderMountains draws three captioned figures", () => {
   assert.equal(m.querySelectorAll("figure").length, 3);
   assert.match(m.textContent, /M3/);
 });
+
+const { renderMaxims } = await import("../site/render/maxims.js");
+const { renderGlossary } = await import("../site/render/glossary.js");
+const { renderPractice } = await import("../site/render/practice.js");
+
+test("maxims trace back to their stage on focus and clear on blur", () => {
+  const calls = [];
+  const c = { ...ctx, lessons: { speed: { stage: 2, section: "missteps", label: "Speed" } }, maxims: [{ text: "Be quick, not hasty.", lesson: "speed" }, { text: "Keep going." }], highlightStage: (n) => calls.push(n) };
+  const m = renderMaxims({ type: "maxims", id: "maxims", heading: "The Way" }, c);
+  const items = m.querySelectorAll("li.maxim");
+  assert.equal(items.length, 2);
+  items[0].dispatch("focus");
+  assert.deepEqual(calls, [2]);
+  assert.match(m.querySelector(".trace").textContent, /Speed/);
+  items[0].dispatch("blur");
+  assert.deepEqual(calls, [2, null]);
+  assert.equal(items[1].getAttribute("tabindex"), null, "untraceable maxims are not focusable");
+});
+
+test("glossary filters as you type", () => {
+  const c = { ...ctx, glossary: [{ term: "Chudan", literal: "Middle ground", usage: "Centre of balance." }, { term: "Mu", literal: "No-thing", usage: "The void." }] };
+  const g = renderGlossary(c);
+  const input = g.querySelector("input");
+  input.value = "void"; input.dispatch("input");
+  const rows = g.querySelectorAll("tr[data-term]");
+  assert.equal(rows.filter((r) => !r.hidden).length, 1);
+});
+
+test("practice groups exercises by belt in order", () => {
+  const c = { ...ctx, lessons: { play: { stage: 1, section: "steps", label: "Play" } }, exercises: [
+    { belt: "black", name: "Frame one note", text: "…", lessons: ["play"] },
+    { belt: "white", name: "One-note practice", text: "…", lessons: ["play"] } ] };
+  const p = renderPractice(c);
+  const hs = p.querySelectorAll("h3").map((h) => h.textContent);
+  assert.deepEqual(hs, ["White belt", "Black belt"]);
+  assert.match(p.textContent, /Play/);
+});
