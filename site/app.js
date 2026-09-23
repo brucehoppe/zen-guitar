@@ -6,7 +6,7 @@ import { renderStage } from "./render/panel.js";
 import { el } from "./render/dom.js";
 
 const $ = (id) => document.getElementById(id);
-const ringEl = $("ring"), panelEl = $("panel"), viewEl = $("view"), koanEl = $("koan"), stageEl = document.querySelector(".stage");
+const ringEl = $("ring"), panelEl = $("panel"), viewEl = $("view"), koanEl = $("koan"), announceEl = $("announce"), stageEl = document.querySelector(".stage");
 const navLinks = [...document.querySelectorAll(".top-nav a")];
 const KOAN_MS = 1200;
 
@@ -44,14 +44,14 @@ function renderLanding() {
     el("p", { class: "stage-sub" }, ["A visual tour of the book by Philip Toshio Sudo"]),
     el("p", { class: "intro" }, [again
       ? "You have walked the ring once. The belt is a little softer; that is all that changes. Empty your cup and begin again."
-      : "Everyone in this dojo starts at white belt. Nothing is saved between visits: empty your cup each visit."]),
+      : "Everyone in this dojo starts at white belt. Empty your cup each visit."]),
     el("p", { class: "hint" }, [el("button", { class: "begin", onclick: () => go({ view: "stage", stage: 1, section: null, again }) }, [again ? "Begin again" : "Begin"]), " or press → to move around the belt."]),
   ]);
 }
 
-function announce(text) {
+function clearKoan() {
   clearTimeout(koanTimer);
-  koanEl.textContent = text;
+  koanEl.textContent = "";
 }
 
 function render() {
@@ -76,9 +76,11 @@ function render() {
   panelEl.replaceChildren(atLanding ? renderLanding() : renderStage(stage, ctx));
   panelEl.setAttribute("data-emblem", atLanding ? "" : stage.emblem);
 
-  if (moved) announce(atLanding ? "Zen Guitar" : stage.title);
-  if (!atLanding && lastStage !== null && lastStage !== stage.id && ring.showKoan(stage.koan, KOAN_MS)) {
-    announce(stage.koan);
+  if (moved) announceEl.textContent = atLanding ? "Zen Guitar" : stage.title;
+  if (atLanding) clearKoan();
+  else if (lastStage !== null && lastStage !== stage.id && ring.showKoan(stage.koan, KOAN_MS)) {
+    clearKoan();
+    koanEl.textContent = stage.koan;
     koanTimer = setTimeout(() => { koanEl.textContent = ""; }, KOAN_MS);
   }
   lastStage = atLanding ? null : stage.id;

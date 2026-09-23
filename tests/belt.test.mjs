@@ -31,6 +31,7 @@ test("each marker has an invisible hit circle drawn beneath its dot", () => {
     const hit = marker(n).querySelector("circle.marker-hit");
     assert.ok(hit, `marker ${n}`);
     assert.equal(marker(n).children[0], hit);
+    assert.equal(hit.getAttribute("r"), "40");
   }
 });
 

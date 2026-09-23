@@ -3,6 +3,7 @@ import { svg } from "./render/dom.js";
 import { markerPositions, rotationFor, wornStops, beltPath } from "./ring.js";
 
 const CX = 200, CY = 200, R = 142, WIDTH = 34, SEAM = 3;
+const FADE_MS = 400; // matches --ease in app.css: the koan fades out over this long before its text is cleared
 
 // Each stop carries a belt-stop-N class naming its place in wornStops (0 light, 2 dark),
 // so CSS can recolour the belt for dark mode.
@@ -40,7 +41,7 @@ export function buildRing(svgEl, { stages, onSelect }) {
   markerPositions(stages.length, R, CX, CY).forEach((p, i) => {
     const stage = stages[i];
     const g = svg("g", { class: "marker", role: "button", tabindex: "0", "aria-label": `Stage ${stage.id}: ${stage.title}`, "data-stage": stage.id, transform: `translate(${p.x} ${p.y})` }, [
-      svg("circle", { r: 34, fill: "transparent", class: "marker-hit" }), // touch target; the dot sits above it
+      svg("circle", { r: 40, fill: "transparent", class: "marker-hit" }), // touch target; the dot sits above it
       svg("circle", { r: 9, class: "marker-dot" }),
       svg("text", { class: "marker-n", "text-anchor": "middle" }, [String(stage.id)]),
     ]);
@@ -57,7 +58,7 @@ export function buildRing(svgEl, { stages, onSelect }) {
 
   svgEl.append(defs, rotor, centre);
 
-  let koanTimer = null;
+  let koanTimer = null, clearTimer = null;
   let angle = null; // running total, so the ring always turns the short way
   return {
     setStage(n) {
@@ -85,13 +86,11 @@ export function buildRing(svgEl, { stages, onSelect }) {
     showKoan(text, ms = 1200) {
       const reduced = globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
       if (reduced || !text) return false;
-      clearTimeout(koanTimer);
+      clearTimeout(koanTimer); clearTimeout(clearTimer);
       koanText.textContent = text;
       svgEl.classList.add("koan-on");
-      koanTimer = setTimeout(() => {
-        svgEl.classList.remove("koan-on");
-        koanTimer = setTimeout(() => { koanText.textContent = ""; }, 400); // after the fade
-      }, ms);
+      koanTimer = setTimeout(() => { svgEl.classList.remove("koan-on"); }, ms);
+      clearTimer = setTimeout(() => { koanText.textContent = ""; }, ms + FADE_MS);
       return true;
     },
   };

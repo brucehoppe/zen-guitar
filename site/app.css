@@ -25,6 +25,7 @@ a { color: var(--accent); }
 .stage { display: grid; grid-template-columns: minmax(280px, 420px) 1fr; gap: 32px; align-items: start; padding: 0 var(--gutter) 40px; max-width: 1100px; margin: 0 auto; }
 .ring-wrap { position: sticky; top: 16px; }
 #ring { width: 100%; height: auto; display: block; transition: transform var(--ease); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; }
 .koan { text-align: center; font-style: italic; color: var(--muted); min-height: 1.6em; margin: 6px 0 0; }
 .panel { min-width: 0; }
 .view { padding: 0 var(--gutter) 40px; max-width: 760px; margin: 0 auto; }
@@ -32,7 +33,7 @@ a { color: var(--accent); }
 .foot { padding: 24px var(--gutter); font-size: 13px; color: var(--muted); text-align: center; }
 @media (max-width: 819px) {
   .stage { grid-template-columns: 1fr; gap: 12px; }
-  .ring-wrap { position: static; width: 150px; margin: 0 auto; }
+  .ring-wrap { position: static; width: 200px; margin: 0 auto; }
 }
 
 .rotor { transition: transform var(--ease); transform-box: view-box; transform-origin: 200px 200px; }
@@ -84,5 +85,5 @@ a { color: var(--accent); }
 @media (max-width: 819px) {
   .koan-svg { display: none; }
   .marker-dot, .marker.is-current .marker-dot { r: 20; }
-  .marker-n { font-size: 18px; }
+  .marker-n { font-size: 22px; } /* 22 units x 200/400 = 11px on screen */
 }
