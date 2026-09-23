@@ -251,19 +251,38 @@ test("maxims trace back to their stage on focus and clear on blur", () => {
   assert.match(m.querySelector(".trace").textContent, /Speed/);
   items[0].dispatch("blur");
   assert.deepEqual(calls, [2, null]);
+  assert.match(m.querySelector(".trace").textContent, /Last traced:.*Speed/);
   assert.equal(items[1].getAttribute("tabindex"), null, "untraceable maxims are not focusable");
 });
 
-test("glossary filters as you type", () => {
+test("maxims trace back to their stage on mouseenter and clear on mouseleave", () => {
+  const calls = [];
+  const c = { ...ctx, lessons: { speed: { stage: 2, section: "missteps", label: "Speed" } }, maxims: [{ text: "Be quick, not hasty.", lesson: "speed" }], highlightStage: (n) => calls.push(n) };
+  const m = renderMaxims({ type: "maxims", id: "maxims", heading: "The Way" }, c);
+  const item = m.querySelector("li.maxim");
+  item.dispatch("mouseenter");
+  assert.deepEqual(calls, [2]);
+  assert.match(m.querySelector(".trace").textContent, /Speed/);
+  item.dispatch("mouseleave");
+  assert.deepEqual(calls, [2, null]);
+  assert.match(m.querySelector(".trace").textContent, /Last traced:.*Speed/);
+});
+
+test("glossary filters as you type and reports a status line", () => {
   const c = { ...ctx, glossary: [{ term: "Chudan", literal: "Middle ground", usage: "Centre of balance." }, { term: "Mu", literal: "No-thing", usage: "The void." }] };
   const g = renderGlossary(c);
   const input = g.querySelector("input");
+  const status = g.querySelector("[role=\"status\"]");
+  assert.equal(status.textContent, "2 terms");
   input.value = "void"; input.dispatch("input");
   const rows = g.querySelectorAll("tr[data-term]");
   assert.equal(rows.filter((r) => !r.hidden).length, 1);
+  assert.equal(status.textContent, "1 term");
+  input.value = "nothing matches this"; input.dispatch("input");
+  assert.equal(status.textContent, "No terms match");
 });
 
-test("practice groups exercises by belt in order", () => {
+test("practice groups exercises by belt in order and links each trains-tag to its lesson", () => {
   const c = { ...ctx, lessons: { play: { stage: 1, section: "steps", label: "Play" } }, exercises: [
     { belt: "black", name: "Frame one note", text: "…", lessons: ["play"] },
     { belt: "white", name: "One-note practice", text: "…", lessons: ["play"] } ] };
@@ -271,4 +290,6 @@ test("practice groups exercises by belt in order", () => {
   const hs = p.querySelectorAll("h3").map((h) => h.textContent);
   assert.deepEqual(hs, ["White belt", "Black belt"]);
   assert.match(p.textContent, /Play/);
+  const tag = p.querySelector("a.trains-tag");
+  assert.equal(tag.getAttribute("href"), "#/1/steps");
 });

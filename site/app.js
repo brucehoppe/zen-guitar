@@ -66,6 +66,8 @@ function render() {
   if (route.view !== "stage") {
     stageEl.hidden = true; viewEl.hidden = false;
     viewEl.replaceChildren((VIEWS[route.view] ?? (() => el("p", {}, ["Coming soon."])))(ctx));
+    window.scrollTo(0, 0);
+    viewEl.querySelector("h2")?.focus({ preventScroll: true });
     lastPlace = route.view; lastStage = null; keepFocus = false;
     return;
   }
