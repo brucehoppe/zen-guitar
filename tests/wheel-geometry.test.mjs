@@ -13,7 +13,7 @@ test("twelve spokes, first at 12 o'clock, labels anchored by side", () => {
   assert.ok(s[3].lx > s[3].x2, "label sits outside the rim");
 });
 
-// Estimated label box (6 units per character — a safe upper bound for the 10.5px
+// Estimated label box (6 units per character — typical for the 10.5px
 // sans label font — anchored by side; a wrapped label's second line drops 12 units
 // for its 1.1em dy) must stay inside the wheel's viewBox ("0 0 340 340"), for the
 // real stage-2 point names pulled straight from site/content/stage2.js — this is

@@ -8,7 +8,7 @@ export function spokes(count, inner, outer, cx, cy) {
     // Every start/end-anchored (non-vertical) label is a "side" label and is pulled
     // in from the default 14-unit gap to 8; the exact 3 and 9 o'clock spokes sit
     // closest to the viewBox's side edges, so they're pulled in further still, to 6.
-    const gap = near(s) ? 6 : 8;
+    const gap = near(c) ? 14 : near(s) ? 6 : 8;
     // The hit line starts further out than the visible spoke line so neighbouring
     // 24-unit-wide hit strokes don't overlap each other near the hub.
     const hitInner = inner + 12;
