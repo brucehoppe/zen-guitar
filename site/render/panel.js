@@ -9,6 +9,7 @@ import { renderTabs } from "./tabs.js";
 import { renderMountains } from "./mountains.js";
 import { renderCards } from "./cards.js";
 import { renderMaxims } from "./maxims.js";
+import { renderMatch } from "./match.js";
 import { EMBLEMS } from "../emblems.js";
 
 export const RENDERERS = {
@@ -22,6 +23,7 @@ export const RENDERERS = {
   mountains: renderMountains,
   cards: renderCards,
   maxims: renderMaxims,
+  match: renderMatch,
 };
 
 function fallback(section) {
