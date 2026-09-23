@@ -11,7 +11,11 @@ class FakeNode {
   removeAttribute(k) { delete this.attrs[k]; }
   hasAttribute(k) { return k in this.attrs; }
   appendChild(n) { this.childNodes.push(n); n.parentNode = this; return n; }
-  append(...ns) { ns.forEach((n) => this.appendChild(typeof n === "string" ? document.createTextNode(n) : n)); }
+  append(...ns) { ns.forEach((n) => {
+    if (typeof n === "string") return this.appendChild(document.createTextNode(n));
+    if (n instanceof FakeNode || n instanceof FakeText) return this.appendChild(n);
+    throw new Error(`fake-dom: cannot append ${n === null ? "null" : typeof n}`);
+  }); }
   replaceChildren(...ns) { this.childNodes = []; this.append(...ns); }
   remove() { if (this.parentNode) this.parentNode.childNodes = this.parentNode.childNodes.filter((n) => n !== this); }
   addEventListener(t, f) { (this.listeners[t] ??= []).push(f); }

@@ -94,15 +94,23 @@ a { color: var(--accent); }
 .wheel-rim { fill: none; stroke: var(--ink); stroke-opacity: .18; }
 .wheel-hub { fill: none; stroke: var(--ink); stroke-opacity: .3; }
 .wheel-hub-t { font: italic 12px var(--serif); fill: var(--ink); }
-.wheel-hub-g { font: 8px var(--sans); fill: var(--muted); }
 .spoke { cursor: pointer; outline: none; }
 .spoke-line { stroke: var(--ink); stroke-opacity: .3; transition: stroke var(--ease), stroke-width var(--ease); }
 .spoke-hit { stroke: transparent; stroke-width: 14; }
+.spoke-dot { fill: var(--ink); fill-opacity: .35; transition: fill var(--ease), fill-opacity var(--ease); }
 .spoke-label { font: 10.5px var(--sans); fill: var(--ink); }
+.spoke-index { font: 700 11px var(--sans); fill: var(--ink); display: none; }
+.spoke:hover .spoke-dot, .spoke:focus-visible .spoke-dot, .spoke.is-selected .spoke-dot { fill: var(--accent); fill-opacity: 1; }
 .spoke.is-selected .spoke-line { stroke: var(--accent); stroke-opacity: 1; stroke-width: 3; }
-.spoke.is-selected .spoke-label { fill: var(--accent); font-weight: 600; }
+.spoke.is-selected .spoke-label, .spoke.is-selected .spoke-index { fill: var(--accent); font-weight: 600; }
 .spoke:focus-visible .spoke-line { stroke: var(--accent); stroke-width: 3; stroke-dasharray: 3 3; }
 .wheel-name { margin: 2px 0 8px; font-size: 22px; font-weight: 500; }
 .eyebrow-inline { font: 600 10px var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 .small { font-size: 13px; }
-@media (max-width: 480px) { .spoke-label { font-size: 9px; } }
+@media (max-width: 480px) {
+  .spoke-label { display: none; }
+  .spoke-index { display: block; }
+}
+@media (prefers-color-scheme: dark) {
+  .spoke.is-selected .spoke-label, .spoke.is-selected .spoke-index { fill: #e05a4b; }
+}

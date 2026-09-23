@@ -99,10 +99,11 @@ test("renderStage has no stage counter and a focusable title", () => {
 });
 
 const { renderWheel } = await import("../site/render/wheel.js");
+const wheelItems = Array.from({ length: 12 }, (_, i) => ({ lesson: `l${i}`, name: `Point ${i + 1}`, core: `Core ${i + 1}`, image: `Image ${i + 1}` }));
+const wheelCtx = { ...ctx, exercisesFor: (l) => (l === "l7" ? [{ name: "Sixteen minutes", text: "One more minute a day." }] : []) };
+
 test("renderWheel makes 12 keyboard-reachable spokes and shows detail on activation", () => {
-  const items = Array.from({ length: 12 }, (_, i) => ({ lesson: `l${i}`, name: `Point ${i + 1}`, core: `Core ${i + 1}`, image: `Image ${i + 1}` }));
-  const w = renderWheel({ type: "wheel", id: "points", heading: "Twelve", hub: { term: "shugyo", kanji: "修行", gloss: "training" }, items },
-    { ...ctx, exercisesFor: (l) => (l === "l7" ? [{ name: "Sixteen minutes", text: "One more minute a day." }] : []) });
+  const w = renderWheel({ type: "wheel", id: "points", heading: "Twelve", hub: { term: "shugyo", kanji: "修行", gloss: "training" }, items: wheelItems }, wheelCtx);
   const spokesEls = w.querySelectorAll("g[role=\"button\"]");
   assert.equal(spokesEls.length, 12);
   spokesEls.forEach((g) => assert.equal(g.getAttribute("tabindex"), "0"));
@@ -110,4 +111,38 @@ test("renderWheel makes 12 keyboard-reachable spokes and shows detail on activat
   assert.match(w.querySelector(".wheel-detail").textContent, /Core 8/);
   assert.match(w.querySelector(".wheel-detail").textContent, /Sixteen minutes/);
   assert.ok(spokesEls[7].classList.contains("is-selected"));
+});
+
+test("renderWheel marks the activated spoke aria-pressed, starting false", () => {
+  const w = renderWheel({ type: "wheel", id: "points", heading: "Twelve", hub: { term: "shugyo", kanji: "修行", gloss: "training" }, items: wheelItems }, wheelCtx);
+  const spokesEls = w.querySelectorAll("g[role=\"button\"]");
+  spokesEls.forEach((g) => assert.equal(g.getAttribute("aria-pressed"), "false"));
+  spokesEls[7].dispatch("keydown", { key: "Enter" });
+  assert.equal(spokesEls[7].getAttribute("aria-pressed"), "true");
+});
+
+test("renderWheel shows no literal \"null\" when a spoke has no exercises", () => {
+  const w = renderWheel({ type: "wheel", id: "points", heading: "Twelve", hub: { term: "shugyo", kanji: "修行", gloss: "training" }, items: wheelItems }, wheelCtx);
+  const spokesEls = w.querySelectorAll("g[role=\"button\"]");
+  spokesEls[0].dispatch("keydown", { key: "Enter" });
+  assert.doesNotMatch(w.querySelector(".wheel-detail").textContent, /null/);
+});
+
+test("renderWheel selecting a second spoke clears the first", () => {
+  const w = renderWheel({ type: "wheel", id: "points", heading: "Twelve", hub: { term: "shugyo", kanji: "修行", gloss: "training" }, items: wheelItems }, wheelCtx);
+  const spokesEls = w.querySelectorAll("g[role=\"button\"]");
+  spokesEls[7].dispatch("keydown", { key: "Enter" });
+  spokesEls[2].dispatch("keydown", { key: "Enter" });
+  assert.equal(spokesEls[7].classList.contains("is-selected"), false);
+  assert.equal(spokesEls[7].getAttribute("aria-pressed"), "false");
+  assert.ok(spokesEls[2].classList.contains("is-selected"));
+  assert.equal(spokesEls[2].getAttribute("aria-pressed"), "true");
+});
+
+test("renderWheel activates on Space and prevents its default", () => {
+  const w = renderWheel({ type: "wheel", id: "points", heading: "Twelve", hub: { term: "shugyo", kanji: "修行", gloss: "training" }, items: wheelItems }, wheelCtx);
+  const spokesEls = w.querySelectorAll("g[role=\"button\"]");
+  const event = spokesEls[3].dispatch("keydown", { key: " " });
+  assert.equal(event.defaultPrevented, true);
+  assert.ok(spokesEls[3].classList.contains("is-selected"));
 });
