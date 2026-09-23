@@ -256,3 +256,30 @@ existing convention for nested repositories.
   re-exporting `stages`, `glossary`, `exercises`, `maxims`, `lessons` from
   `site/content/stage1.js` through `stage5.js`, `glossary.js`, `exercises.js`,
   `maxims.js`, `lessons.js`. The exported shapes are unchanged.
+
+## Addendum 2, 2026-09-23: quiet solitude, and a risograph image
+
+**Quiet solitude is a design requirement.** The site should feel like practising
+alone in an empty room. Concretely:
+
+- One thing on screen at a time. The panel shows a single stage; sections are
+  stacked, never side by side with each other, and nothing competes with the
+  ring for attention.
+- No counters, badges, progress bars, toasts or "new" markers anywhere. The
+  match game's status line is the only running tally, and it lives in the
+  section that owns it.
+- Generous space: panel line length capped near 65 characters, 28 px between
+  sections, the ring surrounded by empty paper.
+- Motion is rare and slow. Only the ring rotation, the panel rise and the koan
+  fade move; nothing pulses, bounces or loops.
+- Copy is spare. Hints are one line. No exclamation marks.
+- Sound stays out of scope, and the site never asks for permissions of any kind.
+
+**Risograph hero image.** The landing page may carry one still image beside
+the ring at 820 px and up (hidden below), as `site/assets/hero.webp`, at most
+200 KB, with `alt` text "A guitarist alone in an empty room, printed in two
+inks." The image is generated from the prompt in `docs/risograph-prompt.md`
+and the two ink colours must be the site's ink (`#1b1a17` or a dark blue) and
+the accent vermilion (`#c0392b`) on paper, so it sits inside the palette
+rather than on top of it. If no image is produced, the slot stays empty and
+the layout does not change.
