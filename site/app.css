@@ -34,3 +34,36 @@ a { color: var(--accent); }
   .stage { grid-template-columns: 1fr; gap: 12px; }
   .ring-wrap { position: static; width: 150px; margin: 0 auto; }
 }
+
+.stitch { fill: none; stroke: var(--ink); stroke-opacity: .18; stroke-dasharray: 3 5; }
+.rotor { transition: transform var(--ease); transform-box: view-box; }
+.marker { cursor: pointer; outline: none; }
+.marker-dot { fill: var(--paper); stroke: var(--ink); stroke-width: 1.5; transition: fill var(--ease), r var(--ease); }
+.marker-n { font: 600 11px var(--sans); fill: var(--ink); pointer-events: none; }
+.marker.is-current .marker-dot { fill: var(--accent); stroke: var(--accent); r: 11; }
+.marker.is-current .marker-n { fill: #fff; }
+.marker.is-hot .marker-dot { stroke: var(--accent); stroke-width: 3; }
+.marker:focus-visible .marker-dot { stroke: var(--accent); stroke-width: 3; stroke-dasharray: 2 2; }
+.koan-svg { font: italic 15px var(--serif); fill: var(--muted); opacity: 0; transition: opacity var(--ease); }
+#ring.koan-on .koan-svg { opacity: 1; }
+#ring.is-worn { filter: contrast(.92) saturate(.9); }
+.stage-panel { animation: rise var(--ease) both; position: relative; max-width: 65ch; }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.eyebrow { font: 600 11px/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 8px 0 6px; }
+.stage-title { font-size: 32px; font-weight: 500; margin: 0 0 4px; }
+.stage-sub { font-style: italic; color: var(--muted); margin: 0 0 18px; }
+.intro { font-size: 17px; }
+.hint { font-family: var(--sans); font-size: 14px; color: var(--muted); }
+.begin { font: italic 16px var(--serif); color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; }
+.sec { margin: 28px 0; }
+.sec-h { font: 600 12px/1 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+.tbl { border-collapse: collapse; width: 100%; font-size: 15px; }
+.tbl th, .tbl td { text-align: left; vertical-align: top; padding: 8px 10px 8px 0; border-top: 1px solid var(--rule); }
+.tbl thead th { font: 600 11px var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); border-top: 0; }
+.tbl tbody th { font-weight: 500; width: 28%; }
+.steps { padding-left: 1.2em; } .steps li { margin: 8px 0; }
+.terms dt { font-weight: 500; margin-top: 10px; } .terms dd { margin: 2px 0 0; }
+.kanji { font-size: .8em; color: var(--muted); margin-left: .4em; }
+.plain { padding-left: 1.1em; } .plain li { margin: 6px 0; }
+.recall { border-top: 1px solid var(--rule); padding: 8px 0; } .recall summary { cursor: pointer; }
+.muted { color: var(--muted); }

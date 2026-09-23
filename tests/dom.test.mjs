@@ -78,3 +78,10 @@ test("renderRecall keeps answers inside details", () => {
   assert.match(details.querySelector("p").textContent, /Because\./);
   assert.match(r.textContent, /Who are you\?/);
 });
+
+const { renderStage } = await import("../site/render/panel.js");
+test("renderStage falls back to a heading paragraph for an unknown section type", () => {
+  const out = renderStage({ id: 9, title: "T", subtitle: "S", intro: "I", sections: [{ type: "nope", id: "x", heading: "Mystery" }], recall: [], reflection: [] }, ctx);
+  assert.match(out.textContent, /Mystery/);
+  assert.ok(out.querySelector("section.sec-fallback"));
+});
