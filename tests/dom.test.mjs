@@ -146,3 +146,25 @@ test("renderWheel activates on Space and prevents its default", () => {
   assert.equal(event.defaultPrevented, true);
   assert.ok(spokesEls[3].classList.contains("is-selected"));
 });
+
+const { renderBalance } = await import("../site/render/balance.js");
+test("renderBalance shows three pairs, six others, and detail on click", () => {
+  const m = (lesson, name) => ({ lesson, name, trap: `${name} trap`, correction: `${name} fix` });
+  const b = renderBalance({ type: "balance", id: "missteps", heading: "Missteps", caption: "Return to centre.",
+    pairs: [[m("a", "A"), m("b", "B")], [m("c", "C"), m("d", "D")], [m("e", "E"), m("f", "F")]],
+    others: ["G", "H", "I", "J", "K", "L"].map((n) => m(n.toLowerCase(), n)) }, ctx);
+  assert.equal(b.querySelectorAll("button.pan").length, 6);
+  assert.equal(b.querySelectorAll("button.misstep").length, 6);
+  b.querySelectorAll("button.pan").forEach((p) => assert.equal(p.getAttribute("aria-pressed"), "false"));
+  b.querySelectorAll("button.misstep").forEach((p) => assert.equal(p.getAttribute("aria-pressed"), "false"));
+  b.querySelectorAll("button.pan")[1].dispatch("click");
+  assert.match(b.querySelector(".balance-detail").textContent, /B trap/);
+  assert.match(b.querySelector(".balance-detail").textContent, /B fix/);
+  assert.equal(b.querySelectorAll("button.pan")[1].getAttribute("aria-pressed"), "true");
+  assert.equal(b.querySelectorAll("button.pan")[0].getAttribute("aria-pressed"), "false");
+  b.querySelectorAll("button.misstep")[2].dispatch("click");
+  assert.match(b.querySelector(".balance-detail").textContent, /I trap/);
+  assert.equal(b.querySelectorAll("button.misstep")[2].getAttribute("aria-pressed"), "true");
+  assert.equal(b.querySelectorAll("button.pan")[1].getAttribute("aria-pressed"), "false");
+  assert.match(b.textContent, /Return to centre/);
+});

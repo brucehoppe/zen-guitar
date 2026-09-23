@@ -4,6 +4,7 @@ import { renderTable } from "./table.js";
 import { renderList } from "./list.js";
 import { renderRecall } from "./recall.js";
 import { renderWheel } from "./wheel.js";
+import { renderBalance } from "./balance.js";
 
 export const RENDERERS = {
   table: renderTable,
@@ -11,6 +12,7 @@ export const RENDERERS = {
   terms: renderList,
   list: renderList,
   wheel: renderWheel,
+  balance: renderBalance,
 };
 
 function fallback(section) {
