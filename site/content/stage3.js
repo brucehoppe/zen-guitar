@@ -6,7 +6,7 @@ export const stage3 = {
   emblem: "hand",
   koan: "Then wash your bowl.",
   intro:
-    "Chops do not earn a black belt. Dazzling players with poor character stay at white belt in this dojo. The belt turns black when body, mind and spirit balance and the player accepts a debt to the world. The Japanese word for human, ningen, is person plus space: we become human only in relation to what surrounds us. Training teaches the three qualities of a pure song: frustration teaches humility, exploring knowledge teaches openness, playing with others teaches generosity. The aim is to become the best person, not the best player.",
+    "Dazzling players with poor character stay at white belt here. The belt turns black when body, mind and spirit balance and the player accepts a debt to the world. Ningen, the word for human, is person plus space: we become human only in relation to what surrounds us. Aim to be the best person, not the best player.",
   sections: [
     {
       type: "steps", id: "responsibilities", heading: "The five responsibilities",
@@ -46,13 +46,13 @@ export const stage3 = {
             type: "table", id: "hand", heading: "Hand", columns: ["Lesson", "Core idea"],
             rows: [
               { lesson: "carriage", cells: ["Carriage", "Mastery shows in how you carry the instrument before a note is played."] },
-              { lesson: "touch", cells: ["Touch", "Sound has color. The guitar is a brush and the air is your canvas."] },
-              { lesson: "tone", cells: ["Tone", "Hue is to sound as it is to color. Tone is also inflection: an actor can say \"I love you\" ten thousand ways."] },
+              { lesson: "touch", cells: ["Touch", "Sound has colour. The guitar is a brush and the air is your canvas."] },
+              { lesson: "tone", cells: ["Tone", "Hue is to sound as it is to colour. Tone is also inflection: an actor can say \"I love you\" ten thousand ways."] },
               { lesson: "intuition", cells: ["Intuition", "Intellect calculates and is too slow; instinct reacts and can be fooled; intuition senses what has not yet happened. The apprentice Matajuro learned to feel the master's wooden sword coming."] },
               { lesson: "energy", cells: ["Energy", "Ki, the life force, projected through sound like water through a hose. If that sounds mystical, go with the flow."] },
               { lesson: "yin-yang", cells: ["Yin-yang", "Call and response, tension and release, the note and the space between. Not two, one."] },
               { lesson: "two-hands", cells: ["Two hands as one", "Do not think of the fretting hand and the picking hand separately."] },
-              { lesson: "balance", cells: ["Balance", "Chudan, the center from which any move is possible at once. Balance is a hair's breadth: bend a note slightly too far and the impact is gone. Chudan is not the exact middle; you can play behind the beat the chudan way."] },
+              { lesson: "balance", cells: ["Balance", "Chudan, the centre from which any move is possible at once. Balance is a hair's breadth: bend a note slightly too far and the impact is gone. Chudan is not the exact middle; you can play behind the beat the chudan way."] },
             ],
           },
         },
@@ -77,8 +77,7 @@ export const stage3 = {
   recall: [
     { q: "List the five responsibilities of a black belt.", a: "To yourself, to your talent, to your art, to your audience, and to the Way." },
     { q: "What are the three qualities of a musical statement, and what Japanese term names the second one?", a: "Character, content and concision. Content is kokoro ire, the heart's spirit put into each note." },
-    { q: "Distinguish intellect, instinct and intuition. Which does the book trust most, and why?", a: "Intellect calculates but is too slow; instinct reacts but can be fooled; intuition senses what has not yet happened. The book trusts intuition, since it is neither too slow nor easily fooled." },
-    { q: "What are the three sources of criticism the book says to disregard?", a: "Taste, hindsight and ego." },
+    { q: "Distinguish intellect, instinct and intuition. Which does the book trust most, and why?", a: "Intellect calculates but is too slow; instinct reacts but can be fooled; intuition senses what has not yet happened. The book trusts intuition, which senses what has not yet happened." },
   ],
   reflection: [
     "What is your \"one thing\"? Can you describe your musical statement in a sentence without naming a genre or a technique?",

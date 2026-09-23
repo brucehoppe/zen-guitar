@@ -1,6 +1,6 @@
 export const glossary = [
   { term: "Ch'iyun (Chinese)", kanji: "氣韻", literal: "Spirit source / energy origin", usage: "The sympathetic vibration that carries feeling from player to listener." },
-  { term: "Chudan", kanji: "中段", literal: "Middle ground", usage: "The center of balance from which any move is instantly possible." },
+  { term: "Chudan", kanji: "中段", literal: "Middle ground", usage: "The centre of balance from which any move is instantly possible." },
   { term: "Dojo", kanji: "道場", literal: "Place of the Way", usage: "Any space where body, mind and spirit train together." },
   { term: "Hyoshi", kanji: "拍子", literal: "Child's clap", usage: "Natural rhythm, felt in the body and shared with a group." },
   { term: "Ichigo ichie", kanji: "一期一会", literal: "One time, one meeting", usage: "Each performance is a once-in-a-lifetime occasion." },

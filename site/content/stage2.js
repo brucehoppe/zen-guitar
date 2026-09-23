@@ -6,7 +6,7 @@ export const stage2 = {
   emblem: "fist",
   koan: "Seven times down, eight times up.",
   intro:
-    "This stage is shugyo, training that never ends. The book sets no regimen: copy records, take lessons or teach yourself, as long as learning happens. Build one good habit at a time. Do one thing the right way once, then commit again in the next moment. Along the way, watch for the potholes: one small deviation left unchecked becomes a wide detour.",
+    "This stage is shugyo, training that never ends. The book sets no regimen: copy records, take lessons or teach yourself, as long as learning happens. Build one good habit at a time. Do one thing the right way once, then commit again in the next moment. Watch for potholes: one small deviation left unchecked becomes a wide detour.",
   sections: [
     {
       type: "wheel", id: "points", heading: "The twelve points of focus",
@@ -16,7 +16,7 @@ export const stage2 = {
         { lesson: "rhythm", name: "Rhythm", core: "Anyone with a heartbeat has rhythm. Feel it in the body, not the mind, and lock your pulse to others'.", image: "Hyoshi, \"child's clap\": an audience slowly clapping in unison." },
         { lesson: "technique", name: "Technique", core: "Learn only what you need to say what you have to say. The aim is to play without thinking about technique.", image: "A crude player can have more to say than a virtuoso." },
         { lesson: "feel", name: "Feel", core: "Reading music deepens understanding, like reading Japanese, but it is not the Way. If it feels right, it is right.", image: "Two actors with the same lines; only one makes the character live." },
-        { lesson: "perfection", name: "Perfection", core: "Intend every note to be perfect. Most mistakes come from self-consciousness; practice until skill is \"ordinary mind\".", image: "Learning to drive or type: awkward, then automatic. Perfect practice makes perfect." },
+        { lesson: "perfection", name: "Perfection", core: "Intend every note to be perfect. Most mistakes come from self-consciousness; practise until skill is \"ordinary mind\".", image: "Learning to drive or type: awkward, then automatic. Perfect practice makes perfect." },
         { lesson: "mistakes", name: "Mistakes", core: "Learn from a mistake at once and fold it into the music. Play the wrong note again as if you meant it.", image: "Turn a wince into a smile. When things fall apart, make art." },
         { lesson: "plateaus", name: "Stages and plateaus", core: "Progress comes in bursts between long flat stretches, and the flats lengthen as you advance. Stay on the step you are on.", image: "A climber sometimes moves sideways or down to go up. A flower blooms when it is ready." },
         { lesson: "discipline", name: "Discipline", core: "Do what must be done, when it must be done, as well as it can be done, every time. Discipline is not self-denial.", image: "Joshu: \"Then wash your bowl.\" The karate master who replaced the bulb after class. The butcher whose every cut is his best." },
@@ -24,15 +24,6 @@ export const stage2 = {
         { lesson: "follow-through", name: "Follow-through", core: "Goals are points on the path, not ends. Carry your spirit through to the far side of every moment.", image: "In a hundred-mile march, ninety is halfway. Suki, the stopping mind a teacher hears from the next room." },
         { lesson: "taste", name: "Taste", core: "Not everyone will like what you play. Develop taste as you develop hearing, then trust it.", image: "The cook who knows how hot he likes his chili." },
         { lesson: "collaboration", name: "Collaboration", core: "Company, vision, chemistry. Choose committed people, follow the strongest vision, and cherish chemistry when it comes.", image: "Two hydrogen and one oxygen: a band whose whole exceeds its parts." },
-      ],
-    },
-    {
-      type: "list", id: "collaboration", heading: "Collaboration decision rules",
-      items: [
-        { title: "Your partner has the vision and you do not", text: "Follow it." },
-        { title: "You have the vision and they do not", text: "Invite them in and help them see it." },
-        { title: "No one has a vision", text: "Build one before you start, or at least before you finish." },
-        { title: "Two strong visions conflict", text: "Seek consensus, but never dilute the result. Know whether the conflict is artistic or ego." },
       ],
     },
     {
@@ -54,11 +45,20 @@ export const stage2 = {
       ],
       others: [
         { lesson: "instant-gratification", name: "Instant gratification", trap: "Believing twice the effort halves the time. \"Learn guitar in 24 hours.\"", correction: "You cannot live a year in six months. Maturity means valuing what is hard-earned." },
-        { lesson: "speed", name: "Speed", trap: "Treating fast fingers as the measure of ability.", correction: "Speed is a byproduct. Study tempo, pacing, timing and quickness: thought to action, without haste." },
+        { lesson: "speed", name: "Speed", trap: "Treating fast fingers as the measure of ability.", correction: "Speed is a byproduct. Study tempo (the song's road speed), pacing (how you move within it), timing (the moment to strike) and quickness (thought to action, without haste)." },
         { lesson: "competition", name: "Competition", trap: "Using other players to prove yourself rather than test yourself.", correction: "Golfers compete against the course. Turn competition inward: the only opponent is within." },
         { lesson: "criticism", name: "Mishandled criticism", trap: "Being pierced by critics, or criticizing to tear down.", correction: "Give criticism to build and take in only what builds. Bad criticism comes from taste, hindsight or ego. Be your own best critic, and do not advertise your flaws." },
         { lesson: "adjust", name: "Failure to adjust", trap: "Freezing when a string breaks, an amp blows or rain falls.", correction: "Kiki: crisis as danger and opportunity. Fall like a cat. The band whose PA died finished the song as a sing-along." },
         { lesson: "overthinking", name: "Overthinking", trap: "Analyzing everything to death.", correction: "Ready, fire, aim. The answer is in action." },
+      ],
+    },
+    {
+      type: "list", id: "collaboration", heading: "Collaboration decision rules",
+      items: [
+        { title: "Your partner has the vision and you do not", text: "Follow it." },
+        { title: "You have the vision and they do not", text: "Invite them in and help them see it." },
+        { title: "No one has a vision", text: "Build one before you start, or at least before you finish." },
+        { title: "Two strong visions conflict", text: "Seek consensus, but never dilute the result. Know whether the conflict is artistic or ego." },
       ],
     },
   ],
@@ -66,10 +66,11 @@ export const stage2 = {
     { q: "Name the three samurai adages under Spirit.", a: "Don't ask, practice. Seven times down, eight times up. The only opponent is within." },
     { q: "What is the four-part definition of discipline, and which Zen story illustrates each part?", a: "Do what has to be done, when it has to be done, as well as it can be done, and that way every time. The images are Joshu's \"Then wash your bowl\", the karate master who replaced the bulb after class, and the butcher whose every cut is his best." },
     { q: "What is the difference between tempo, pacing, timing and quickness?", a: "Tempo is the song's road speed. Pacing is how you move within it. Timing is the exact moment to strike. Quickness is thought to action, without haste." },
+    { q: "What are the three sources of criticism the book says to disregard?", a: "Taste, hindsight and ego." },
   ],
   reflection: [
     "Which of the twelve missteps is your current pothole? Which is its opposite, and are you swinging between them?",
     "Which of the twelve points of focus have you never consciously trained? Pick one habit to build this week.",
-    "Whose criticism have you let pierce your armor? Which of the three kinds was it?",
+    "Whose criticism have you let pierce your armour? Which of the three kinds was it?",
   ],
 };

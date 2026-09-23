@@ -8,7 +8,7 @@ export const exercises = [
   { belt: "practice", name: "Wrong-note repair", text: "Hit a wrong note on purpose, then play it again as if you meant it, and resolve it.", lessons: ["mistakes"] },
   { belt: "practice", name: "Count to ten", text: "Before practice, sit and count silently from one to ten. Start over at any stray thought.", lessons: ["focus"] },
   { belt: "practice", name: "The blackboard", text: "Find a phrase you can stand behind completely and write it again and again, meaning it each time.", lessons: ["halfheartedness"] },
-  { belt: "practice", name: "Sixteen minutes", text: "Practice fifteen minutes today and sixteen tomorrow. Add one minute a day.", lessons: ["discipline", "instant-gratification"] },
+  { belt: "practice", name: "Sixteen minutes", text: "Practise fifteen minutes today and sixteen tomorrow. Add one minute a day.", lessons: ["discipline", "instant-gratification"] },
   { belt: "practice", name: "Slow, then slower", text: "Take a passage you can play and repeat it slowly, then slower still, until the pattern lives in the body.", lessons: ["rhythm"] },
   { belt: "practice", name: "Burn the thought", text: "When a defeatist thought arrives, picture writing it on paper and burning it. Never say it aloud.", lessons: ["spirit"] },
   { belt: "practice", name: "Big at low volume", text: "Play something intense with the volume down. Then play something quiet with the volume up.", lessons: ["overearnestness", "speed"] },

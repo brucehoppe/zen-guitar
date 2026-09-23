@@ -6,7 +6,7 @@ export const stage5 = {
   emblem: "enso",
   koan: "Not yet.",
   intro:
-    "The final chapter is one long list of maxims, a line each, with no commentary. It walks back through every lesson in the book in compressed form. Once the ideas are in your bones they no longer need explaining; each line is meant to be recognized, not learned. A good test of the earlier stages is to read the list and see how many lines you can trace to their source. The destination is the starting point, seen with new eyes.",
+    "The final chapter is one long list of one-line maxims with no commentary, walking back through every lesson in compressed form. Once the ideas are in your bones they need no explaining; each line is meant to be recognized, not learned. How many lines can you trace to their source? The destination is the starting point, seen anew.",
   sections: [
     { type: "maxims", id: "maxims", heading: "The Way of Zen Guitar" },
     {

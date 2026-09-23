@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { stages, lessons } from "../site/content/index.js";
+import { stages, lessons, glossary, exercises, maxims } from "../site/content/index.js";
 
 const KNOWN_TYPES = new Set(["table", "steps", "terms", "wheel", "balance", "tabs", "mountains", "cards", "maxims", "match", "list"]);
 
@@ -34,7 +34,6 @@ test("lessons point at real stages and sections", () => {
   }
 });
 
-import { glossary, exercises, maxims } from "../site/content/index.js";
 
 const byId = (n) => stages.find((s) => s.id === n);
 const section = (n, id) => byId(n).sections.find((s) => s.id === id);
@@ -82,4 +81,54 @@ test("wheel and balance items each carry a distinct lesson id", () => {
 
 test("exercises use only the four belts", () => {
   for (const e of exercises) assert.ok(["white", "practice", "black", "barrier"].includes(e.belt), e.name);
+});
+
+function* strings(value) {
+  if (typeof value === "string") yield value;
+  else if (Array.isArray(value)) for (const v of value) yield* strings(v);
+  else if (value && typeof value === "object") for (const v of Object.values(value)) yield* strings(v);
+}
+
+test("copy uses Canadian spelling and no exclamation marks", () => {
+  for (const str of strings([stages, glossary, exercises, maxims])) {
+    assert.doesNotMatch(str, /\b(color|center|armor|traveling)\b/, str);
+    assert.ok(!str.includes("!"), `exclamation mark: ${str}`);
+  }
+});
+
+const hhhRows = () => section(3, "hhh").tabs.flatMap((t) => t.section.rows);
+const labelled = () => [
+  ...section(2, "points").items,
+  ...section(2, "missteps").pairs.flat(),
+  ...section(2, "missteps").others,
+  ...section(4, "dualities").items,
+  ...hhhRows(),
+];
+
+test("every wheel item, balance item, card, row and responsibility carries a lesson", () => {
+  for (const x of [...labelled(), ...section(3, "responsibilities").items]) assert.ok(x.lesson, JSON.stringify(x).slice(0, 60));
+});
+
+test("lesson labels match the names shown on screen", () => {
+  for (const x of labelled()) assert.equal(lessons[x.lesson].label, x.name ?? x.front ?? x.cells[0]);
+});
+
+test("exact counts for exercises, maxims, rules, steps and recall", () => {
+  assert.equal(exercises.length, 22);
+  const perBelt = ["white", "practice", "black", "barrier"].map((b) => exercises.filter((e) => e.belt === b).length);
+  assert.deepEqual(perBelt, [3, 8, 7, 4]);
+  assert.equal(maxims.length, 12);
+  assert.equal(section(2, "collaboration").items.length, 4);
+  assert.equal(section(1, "steps").items.length, 4);
+  assert.deepEqual(stages.map((s) => s.recall.length), [2, 4, 3, 3, 0]);
+});
+
+test("structural rulings hold", () => {
+  assert.deepEqual(byId(2).sections.map((s) => s.id), ["points", "missteps", "collaboration"]);
+  assert.deepEqual(byId(5).sections.map((s) => s.id), ["maxims", "match"]);
+  assert.deepEqual(byId(5).recall, []);
+  for (const s of stages) assert.ok(s.reflection.length >= 1, `stage ${s.id} reflection`);
+  for (const t of section(3, "hhh").tabs) assert.equal(t.id, t.section.id);
+  for (const m of section(4, "mountains").items) assert.equal(m.lesson, undefined);
+  for (const r of section(3, "responsibilities").items) assert.equal(r.lesson, "responsibilities");
 });
