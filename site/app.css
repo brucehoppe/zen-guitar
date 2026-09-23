@@ -183,6 +183,8 @@ a { color: var(--accent-text); }
 .match .is-matched { border-color: var(--accent-text); opacity: .55; }
 .match .is-matched::after { content: " ✓"; color: var(--accent-text); }
 .match .is-wrong { animation: shake 400ms; border-color: var(--accent-text); }
+.match.is-complete .match-col:first-child { grid-column: 1 / -1; }
+.match.is-complete .is-matched { opacity: 1; }
 @keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
 .match-status { font: 13px var(--sans); color: var(--muted); }
 .match-img:focus-visible, .match-lesson:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

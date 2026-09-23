@@ -321,11 +321,17 @@ test("match reports choosing a lesson before an image", () => {
   assert.equal(m.querySelector(".match-status").textContent, "Choose an image first.");
 });
 
-test("match's completion text is hard-coded regardless of item count", () => {
-  const c = { ...ctx, lessons: { a: { stage: 1, section: "s", label: "Alpha" }, b: { stage: 2, section: "s", label: "Beta" } }, shuffle: (x) => x };
-  const m = renderMatch({ type: "match", id: "match", heading: "Match", items: [{ image: "Teacup", lesson: "a" }, { image: "Bulb", lesson: "b" }] }, c);
-  const imgs = m.querySelectorAll("button.match-img"), les = m.querySelectorAll("button.match-lesson");
-  imgs[0].dispatch("click"); les[0].dispatch("click");
-  imgs[1].dispatch("click"); les[1].dispatch("click");
+test("match's completion text is hard-coded and the grid marks itself complete", () => {
+  const items = Array.from({ length: 10 }, (_, i) => ({ image: `Item ${i}`, lesson: `l${i}` }));
+  const lessons = Object.fromEntries(items.map((it, i) => [it.lesson, { stage: 1, section: "s", label: `Lesson ${i}` }]));
+  const c = { ...ctx, lessons, shuffle: (x) => x };
+  const m = renderMatch({ type: "match", id: "match", heading: "Match", items }, c);
+  const grid = m.querySelector(".match");
+  const imgs = m.querySelectorAll("button.match-img");
+  for (let i = 0; i < 10; i++) {
+    imgs[i].dispatch("click");
+    m.querySelectorAll("button.match-lesson")[0].dispatch("click");
+  }
   assert.equal(m.querySelector(".match-status").textContent, "All ten. Now go play.");
+  assert.ok(grid.classList.contains("is-complete"));
 });

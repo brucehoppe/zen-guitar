@@ -54,6 +54,7 @@ export function renderMatch(section, ctx) {
         b.remove();
         matched++;
         wrongToggle = false;
+        if (matched === total) grid.classList.add("is-complete");
         announce(matched === total ? "All ten. Now go play." : `${matched} of ${total} matched`);
         picked = null; pickedItem = null;
         focusNextUnmatched(idx);
@@ -69,10 +70,12 @@ export function renderMatch(section, ctx) {
     });
   });
 
+  const grid = el("div", { class: "match" }, [el("div", { class: "match-col" }, imgButtons), el("div", { class: "match-col" }, lessonButtons)]);
+
   const body = el("details", { class: "test-yourself" }, [
     el("summary", {}, ["Test yourself"]),
     el("p", { class: "muted small" }, ["Choose an image, then the lesson it belongs to. Nothing is saved; a reload empties the cup."]),
-    el("div", { class: "match" }, [el("div", { class: "match-col" }, imgButtons), el("div", { class: "match-col" }, lessonButtons)]),
+    grid,
     status,
   ]);
 
