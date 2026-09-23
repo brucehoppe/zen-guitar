@@ -1,13 +1,13 @@
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 function build(node, attrs, children) {
-  for (const [k, v] of Object.entries(attrs)) {
+  for (const [k, v] of Object.entries(attrs ?? {})) {
     if (v === null || v === undefined || v === false) continue;
-    if (k.startsWith("on") && typeof v === "function") node.addEventListener(k.slice(2), v);
+    if (k.startsWith("on") && typeof v === "function") node.addEventListener(k.slice(2).toLowerCase(), v);
     else node.setAttribute(k, v === true ? "" : v);
   }
   for (const c of [].concat(children)) {
-    if (c === null || c === undefined) continue;
+    if (c === null || c === undefined || c === false) continue;
     node.append(typeof c === "string" || typeof c === "number" ? document.createTextNode(String(c)) : c);
   }
   return node;

@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { install } from "./fake-dom.mjs";
 install();
-const { el } = await import("../site/render/dom.js");
+const { el, svg, heading, kanji } = await import("../site/render/dom.js");
 const { renderTable } = await import("../site/render/table.js");
 const { renderList } = await import("../site/render/list.js");
 const { renderRecall } = await import("../site/render/recall.js");
@@ -17,6 +17,35 @@ test("el builds attributes, text and listeners", () => {
   assert.equal(b.textContent, "Go");
   b.dispatch("click");
   assert.equal(clicked, 1);
+});
+
+test("el applies attribute rules: true becomes empty string, false/null/undefined are skipped", () => {
+  const b = el("input", { disabled: true, hidden: false, "data-x": null, "data-y": undefined, type: "text" });
+  assert.equal(b.getAttribute("disabled"), "");
+  assert.equal(b.hasAttribute("hidden"), false);
+  assert.equal(b.hasAttribute("data-x"), false);
+  assert.equal(b.hasAttribute("data-y"), false);
+  assert.equal(b.getAttribute("type"), "text");
+});
+
+test("svg builds an element in the SVG namespace", () => {
+  const s = svg("circle", { r: "4" });
+  assert.equal(s.tagName, "circle");
+  assert.equal(s.namespaceURI, "http://www.w3.org/2000/svg");
+});
+
+test("heading builds an id from the section id", () => {
+  const h = heading({ id: "ideas", heading: "Key ideas" });
+  assert.equal(h.getAttribute("id"), "sec-ideas");
+  assert.equal(h.textContent, "Key ideas");
+});
+
+test("kanji returns null without text and a lang=ja span with it", () => {
+  assert.equal(kanji(null), null);
+  assert.equal(kanji(""), null);
+  const k = kanji("喝");
+  assert.equal(k.getAttribute("lang"), "ja");
+  assert.equal(k.textContent, "喝");
 });
 
 test("renderTable puts every cell in and tags lesson rows", () => {
@@ -36,10 +65,16 @@ test("renderList handles steps (ordered) and terms (with kanji)", () => {
   assert.equal(t.querySelector("span[lang=\"ja\"]").textContent, "喝");
 });
 
-test("renderRecall reveals answers on click and never shows them by default", () => {
+test("renderList handles plain list type as a ul", () => {
+  const l = renderList({ type: "list", id: "rules", heading: "Rules", items: [{ title: "Rule", text: "Follow it." }] }, ctx);
+  assert.ok(l.querySelector("ul"), "plain list renders as a ul");
+});
+
+test("renderRecall keeps answers inside details", () => {
   const r = renderRecall({ recall: [{ q: "Why?", a: "Because." }], reflection: ["Who are you?"] });
   const details = r.querySelector("details");
   assert.ok(details, "uses details/summary so keyboard works for free");
   assert.equal(details.getAttribute("open"), null);
+  assert.match(details.querySelector("p").textContent, /Because\./);
   assert.match(r.textContent, /Who are you\?/);
 });
