@@ -96,7 +96,7 @@ a { color: var(--accent); }
 .wheel-hub-t { font: italic 12px var(--serif); fill: var(--ink); }
 .spoke { cursor: pointer; outline: none; }
 .spoke-line { stroke: var(--ink); stroke-opacity: .3; transition: stroke var(--ease), stroke-width var(--ease); }
-.spoke-hit { stroke: transparent; stroke-width: 14; }
+.spoke-hit { stroke: transparent; stroke-width: 24; }
 .spoke-dot { fill: var(--ink); fill-opacity: .35; transition: fill var(--ease), fill-opacity var(--ease); }
 .spoke-label { font: 10.5px var(--sans); fill: var(--ink); }
 .spoke-index { font: 700 11px var(--sans); fill: var(--ink); display: none; }
@@ -109,7 +109,8 @@ a { color: var(--accent); }
 .small { font-size: 13px; }
 @media (max-width: 480px) {
   .spoke-label { display: none; }
-  .spoke-index { display: block; }
+  .spoke-index { display: block; font-size: 15px; }
+  .wheel-hub-t { font-size: 16px; }
 }
 @media (prefers-color-scheme: dark) {
   .spoke.is-selected .spoke-label, .spoke.is-selected .spoke-index { fill: #e05a4b; }
