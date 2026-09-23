@@ -17,7 +17,7 @@ export function renderWheel(section, ctx) {
     const g = geo[i];
     const grp = svg("g", { class: "spoke", role: "button", tabindex: "0", "aria-pressed": "false", "aria-label": `${i + 1}. ${item.name}` }, [
       svg("line", { x1: g.x1, y1: g.y1, x2: g.x2, y2: g.y2, class: "spoke-line" }),
-      svg("line", { x1: g.x1, y1: g.y1, x2: g.x2, y2: g.y2, class: "spoke-hit" }),
+      svg("line", { x1: g.hx1, y1: g.hy1, x2: g.x2, y2: g.y2, class: "spoke-hit" }),
       svg("circle", { cx: g.x2, cy: g.y2, r: 3, class: "spoke-dot" }),
       svg("text", { x: g.lx, y: g.ly, "text-anchor": g.anchor, class: "spoke-label" },
         splitLabel(item.name).map((line, li) => svg("tspan", { x: g.lx, dy: li ? "1.1em" : null }, [line]))),

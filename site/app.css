@@ -90,7 +90,7 @@ a { color: var(--accent); }
 
 .wheel-wrap { display: grid; grid-template-columns: minmax(220px, 340px) 1fr; gap: 18px; align-items: start; }
 @media (max-width: 819px) { .wheel-wrap { grid-template-columns: 1fr; } }
-.wheel { width: 100%; height: auto; }
+.wheel { width: 100%; height: auto; max-width: 340px; margin: 0 auto; display: block; }
 .wheel-rim { fill: none; stroke: var(--ink); stroke-opacity: .18; }
 .wheel-hub { fill: none; stroke: var(--ink); stroke-opacity: .3; }
 .wheel-hub-t { font: italic 12px var(--serif); fill: var(--ink); }

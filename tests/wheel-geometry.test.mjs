@@ -13,15 +13,22 @@ test("twelve spokes, first at 12 o'clock, labels anchored by side", () => {
   assert.ok(s[3].lx > s[3].x2, "label sits outside the rim");
 });
 
-// Estimated label box (5 units per character, anchored by side; a wrapped label's
-// second line drops 12 units for its 1.1em dy) must stay inside the wheel's
-// viewBox ("0 0 340 340"), for the real stage-2 point names pulled straight from
-// site/content/stage2.js — this is what would catch "Follow-through" (wraps at its
-// hyphen) or "Stages and plateaus" (wraps at its last space) running past the edge.
+// Estimated label box (6 units per character — a safe upper bound for the 10.5px
+// sans label font — anchored by side; a wrapped label's second line drops 12 units
+// for its 1.1em dy) must stay inside the wheel's viewBox ("0 0 340 340"), for the
+// real stage-2 point names pulled straight from site/content/stage2.js — this is
+// what would catch "Follow-through" (wraps at its hyphen) or "Stages and plateaus"
+// (wraps at its last space) running past the edge, or the side-label gap widening
+// back out. EDGE_SLACK covers the one genuinely tight real case: "Perfection" (10
+// characters, an unwrapped side label) comes out ~0.85 units past the box under
+// this per-character estimate even with the reduced gap — a hair over a heuristic
+// bound that is itself already generous per character, not a real clip (confirmed
+// against the live rendered label's actual getBBox() in the browser check).
 test("every spoke label's estimated tspan lines stay inside the wheel viewBox", () => {
   const viewBox = { x: 0, y: 0, w: 340, h: 340 };
-  const CHAR_W = 5;
+  const CHAR_W = 6;
   const LINE_H = 12;
+  const EDGE_SLACK = 1;
   const points = stage2.sections.find((sec) => sec.type === "wheel").items;
   const labels = points.map((p) => p.name);
   const s = spokes(labels.length, 34, 120, 170, 170);
@@ -31,8 +38,8 @@ test("every spoke label's estimated tspan lines stay inside the wheel viewBox", 
       const left = sp.anchor === "end" ? sp.lx - width : sp.anchor === "middle" ? sp.lx - width / 2 : sp.lx;
       const right = sp.anchor === "end" ? sp.lx : sp.anchor === "middle" ? sp.lx + width / 2 : sp.lx + width;
       const ly = sp.ly + li * LINE_H;
-      assert.ok(left >= viewBox.x - 1e-9, `spoke ${i} ("${line}") box left ${left} left of viewBox`);
-      assert.ok(right <= viewBox.x + viewBox.w + 1e-9, `spoke ${i} ("${line}") box right ${right} past viewBox`);
+      assert.ok(left >= viewBox.x - EDGE_SLACK, `spoke ${i} ("${line}") box left ${left} left of viewBox`);
+      assert.ok(right <= viewBox.x + viewBox.w + EDGE_SLACK, `spoke ${i} ("${line}") box right ${right} past viewBox`);
       assert.ok(ly >= viewBox.y - 1e-9 && ly <= viewBox.y + viewBox.h + 1e-9, `spoke ${i} ("${line}") ly out of viewBox`);
     });
   });
@@ -40,7 +47,8 @@ test("every spoke label's estimated tspan lines stay inside the wheel viewBox", 
 
 test("splitLabel wraps long names at the hyphen or last space, leaves short ones alone", () => {
   assert.deepEqual(splitLabel("Follow-through"), ["Follow-", "through"]);
-  assert.deepEqual(splitLabel("Stages and plateaus"), ["Stages and", "plateaus"]);
+  assert.deepEqual(splitLabel("Stages and plateaus"), ["Stages and ", "plateaus"]);
+  assert.equal(splitLabel("Stages and plateaus").join(""), "Stages and plateaus");
   assert.deepEqual(splitLabel("Collaboration"), ["Collaboration"]); // no hyphen/space to split on
   assert.deepEqual(splitLabel("Discipline"), ["Discipline"]); // 10 chars, at the 11-char threshold
 });
