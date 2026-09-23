@@ -49,15 +49,15 @@ export function renderBalance(section, ctx) {
       select({ ...r, opposite: l.name }, right);
       if (e.detail > 0) scrollToDetail();
     });
-    const fulcrumGroup = svg("svg", { x: 52, y: 10, width: 16, height: 28, viewBox: "0 0 16 28", preserveAspectRatio: "xMidYMid meet", class: "fulcrum-inner" }, [
-      svg("path", { d: "M8 4 L0 26 L16 26 Z", class: "fulcrum" }),
-      svg("circle", { cx: 8, cy: 4, r: 3, class: "chudan-mark" }),
+    const fulcrumGroup = svg("g", { class: "fulcrum-inner" }, [
+      svg("path", { d: "M140 6 L128 24 L152 24 Z", class: "fulcrum" }),
+      svg("circle", { cx: 140, cy: 6, r: 3, class: "chudan-mark" }),
     ]);
-    const beam = svg("svg", { viewBox: "0 0 120 40", class: "beam", "aria-hidden": "true", preserveAspectRatio: "none" }, [
-      svg("line", { x1: 10, y1: 14, x2: 110, y2: 14, class: "beam-line", "vector-effect": "non-scaling-stroke" }),
+    const beam = svg("svg", { viewBox: "0 0 280 24", class: "beam", "aria-hidden": "true" }, [
+      svg("line", { x1: 20, y1: 14, x2: 260, y2: 14, class: "beam-line", "vector-effect": "non-scaling-stroke" }),
       fulcrumGroup,
-      svg("line", { x1: 10, y1: 14, x2: 10, y2: 4, class: "beam-line", "vector-effect": "non-scaling-stroke" }),
-      svg("line", { x1: 110, y1: 14, x2: 110, y2: 4, class: "beam-line", "vector-effect": "non-scaling-stroke" }),
+      svg("line", { x1: 70, y1: 14, x2: 70, y2: 4, class: "beam-line", "vector-effect": "non-scaling-stroke" }),
+      svg("line", { x1: 210, y1: 14, x2: 210, y2: 4, class: "beam-line", "vector-effect": "non-scaling-stroke" }),
     ]);
     balanceEl.append(el("div", { class: "pans" }, [left, right]), beam);
     return balanceEl;
