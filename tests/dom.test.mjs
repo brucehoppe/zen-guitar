@@ -97,3 +97,17 @@ test("renderStage has no stage counter and a focusable title", () => {
   assert.equal(out.querySelector("p.eyebrow"), null);
   assert.equal(out.querySelector("h2").getAttribute("tabindex"), "-1");
 });
+
+const { renderWheel } = await import("../site/render/wheel.js");
+test("renderWheel makes 12 keyboard-reachable spokes and shows detail on activation", () => {
+  const items = Array.from({ length: 12 }, (_, i) => ({ lesson: `l${i}`, name: `Point ${i + 1}`, core: `Core ${i + 1}`, image: `Image ${i + 1}` }));
+  const w = renderWheel({ type: "wheel", id: "points", heading: "Twelve", hub: { term: "shugyo", kanji: "修行", gloss: "training" }, items },
+    { ...ctx, exercisesFor: (l) => (l === "l7" ? [{ name: "Sixteen minutes", text: "One more minute a day." }] : []) });
+  const spokesEls = w.querySelectorAll("g[role=\"button\"]");
+  assert.equal(spokesEls.length, 12);
+  spokesEls.forEach((g) => assert.equal(g.getAttribute("tabindex"), "0"));
+  spokesEls[7].dispatch("keydown", { key: "Enter" });
+  assert.match(w.querySelector(".wheel-detail").textContent, /Core 8/);
+  assert.match(w.querySelector(".wheel-detail").textContent, /Sixteen minutes/);
+  assert.ok(spokesEls[7].classList.contains("is-selected"));
+});

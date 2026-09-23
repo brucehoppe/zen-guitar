@@ -87,3 +87,22 @@ a { color: var(--accent); }
   .marker-dot, .marker.is-current .marker-dot { r: 20; }
   .marker-n { font-size: 22px; } /* 22 units x 200/400 = 11px on screen */
 }
+
+.wheel-wrap { display: grid; grid-template-columns: minmax(220px, 340px) 1fr; gap: 18px; align-items: start; }
+@media (max-width: 819px) { .wheel-wrap { grid-template-columns: 1fr; } }
+.wheel { width: 100%; height: auto; }
+.wheel-rim { fill: none; stroke: var(--ink); stroke-opacity: .18; }
+.wheel-hub { fill: none; stroke: var(--ink); stroke-opacity: .3; }
+.wheel-hub-t { font: italic 12px var(--serif); fill: var(--ink); }
+.wheel-hub-g { font: 8px var(--sans); fill: var(--muted); }
+.spoke { cursor: pointer; outline: none; }
+.spoke-line { stroke: var(--ink); stroke-opacity: .3; transition: stroke var(--ease), stroke-width var(--ease); }
+.spoke-hit { stroke: transparent; stroke-width: 14; }
+.spoke-label { font: 10.5px var(--sans); fill: var(--ink); }
+.spoke.is-selected .spoke-line { stroke: var(--accent); stroke-opacity: 1; stroke-width: 3; }
+.spoke.is-selected .spoke-label { fill: var(--accent); font-weight: 600; }
+.spoke:focus-visible .spoke-line { stroke: var(--accent); stroke-width: 3; stroke-dasharray: 3 3; }
+.wheel-name { margin: 2px 0 8px; font-size: 22px; font-weight: 500; }
+.eyebrow-inline { font: 600 10px var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.small { font-size: 13px; }
+@media (max-width: 480px) { .spoke-label { font-size: 9px; } }

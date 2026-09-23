@@ -3,12 +3,14 @@ import { el, heading } from "./dom.js";
 import { renderTable } from "./table.js";
 import { renderList } from "./list.js";
 import { renderRecall } from "./recall.js";
+import { renderWheel } from "./wheel.js";
 
 export const RENDERERS = {
   table: renderTable,
   steps: renderList,
   terms: renderList,
   list: renderList,
+  wheel: renderWheel,
 };
 
 function fallback(section) {
