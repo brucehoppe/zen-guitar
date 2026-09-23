@@ -286,14 +286,14 @@ the layout does not change.
 
 ## Addendum 3, 2026-09-23: the hero image is the Rats of Chaos poster
 
-The owner supplied `zen_guitar/zen rats of chaos.png` (a two-ink poster, indigo
+The owner supplied `zen_guitar/rats of chaos of grid lock to use.png` (the full-name version, "Rats of Chaos of Gridlock") (a two-ink poster, indigo
 and vermilion on cream: a guitar and teacup on a quiet porch facing pine,
 mountains and a red sun; a city, traffic and stacked amps on the right; the
 words "practice, listen, tune, play, repeat"). It replaces the generated
 risograph brief. It is landscape, so the landing slot changes: the image is
 `site/assets/hero.jpg` (no WebP encoder on the build machine; JPEG at or under
 about 200 KB, 1200 px wide), shown below the landing copy at every width, with
-`alt` "Rats of Chaos present: Music Through the Noise. A guitar and a teacup on
-a quiet porch facing pine, mountains and a red sun; a city, traffic and
-amplifiers on the other side." The README opens with the same poster from
+`alt` "Rats of Chaos of Gridlock. A quiet porch with a guitar, a cushion and a
+cup of tea facing pine, mountains and a red sun; the CN Tower, a highway of
+traffic and amplifiers on the other side." The README opens with the same poster from
 `docs/images/rats-of-chaos-poster.jpg`.
