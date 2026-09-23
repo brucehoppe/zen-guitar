@@ -21,6 +21,9 @@ buy it or borrow it from a library.
 This is a personal, non-commercial learning project. It is not affiliated with
 or endorsed by the author's estate or the publisher.
 
+Fonts: Source Serif 4 and Source Sans 3 by Adobe, latin subsets from @fontsource,
+under the SIL Open Font License; licences in `site/assets/fonts/`.
+
 ## What's here
 
 - `zen_guitar/Zen-Guitar-Study-Guide.md` — the study guide the site is built from
