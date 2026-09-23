@@ -157,9 +157,13 @@ test("renderBalance shows three pairs, six others, and detail on click", () => {
   assert.equal(b.querySelectorAll("button.misstep").length, 6);
   b.querySelectorAll("button.pan").forEach((p) => assert.equal(p.getAttribute("aria-pressed"), "false"));
   b.querySelectorAll("button.misstep").forEach((p) => assert.equal(p.getAttribute("aria-pressed"), "false"));
+  const groups = b.querySelectorAll(".balance");
+  assert.equal(groups[0].getAttribute("role"), "group");
+  assert.equal(groups[0].getAttribute("aria-label"), "Opposite pair: A and B");
   b.querySelectorAll("button.pan")[1].dispatch("click");
   assert.match(b.querySelector(".balance-detail").textContent, /B trap/);
   assert.match(b.querySelector(".balance-detail").textContent, /B fix/);
+  assert.match(b.querySelector(".balance-detail").textContent, /Its opposite: A/);
   assert.equal(b.querySelectorAll("button.pan")[1].getAttribute("aria-pressed"), "true");
   assert.equal(b.querySelectorAll("button.pan")[0].getAttribute("aria-pressed"), "false");
   b.querySelectorAll("button.misstep")[2].dispatch("click");
@@ -167,4 +171,18 @@ test("renderBalance shows three pairs, six others, and detail on click", () => {
   assert.equal(b.querySelectorAll("button.misstep")[2].getAttribute("aria-pressed"), "true");
   assert.equal(b.querySelectorAll("button.pan")[1].getAttribute("aria-pressed"), "false");
   assert.match(b.textContent, /Return to centre/);
+  assert.match(b.textContent, /Standing alone/);
+});
+
+test("renderBalance tilts the beam toward the selected pan and levels for an other", () => {
+  const m = (lesson, name) => ({ lesson, name, trap: `${name} trap`, correction: `${name} fix` });
+  const b = renderBalance({ type: "balance", id: "missteps", heading: "Missteps", caption: "Return to centre.",
+    pairs: [[m("a", "A"), m("b", "B")], [m("c", "C"), m("d", "D")], [m("e", "E"), m("f", "F")]],
+    others: ["G", "H", "I", "J", "K", "L"].map((n) => m(n.toLowerCase(), n)) }, ctx);
+  const balances = b.querySelectorAll(".balance");
+  b.querySelectorAll("button.pan")[1].dispatch("click"); // right pan of the first pair
+  assert.ok(balances[0].classList.contains("is-tilt-right"));
+  b.querySelectorAll("button.misstep")[0].dispatch("click");
+  assert.equal(balances[0].classList.contains("is-tilt-right"), false);
+  assert.equal(balances[0].classList.contains("is-tilt-left"), false);
 });

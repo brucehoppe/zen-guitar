@@ -1,6 +1,6 @@
 /* site/app.css */
 :root {
-  --paper: #f6f1e7; --ink: #1b1a17; --accent: #c0392b;
+  --paper: #f6f1e7; --ink: #1b1a17; --accent: #c0392b; --accent-text: #c0392b;
   --muted: color-mix(in srgb, var(--ink) 55%, var(--paper));
   --rule: color-mix(in srgb, var(--ink) 18%, var(--paper));
   --serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
@@ -9,7 +9,7 @@
   --gutter: 16px;
 }
 @media (prefers-color-scheme: dark) {
-  :root { --paper: #161513; --ink: #ece6d8; }
+  :root { --paper: #161513; --ink: #ece6d8; --accent-text: #e05a4b; }
 }
 @media (prefers-reduced-motion: reduce) {
   :root { --ease: 0ms; }
@@ -102,9 +102,9 @@ a { color: var(--accent); }
 .spoke-index { font: 700 11px var(--sans); fill: var(--ink); display: none; }
 .spoke:hover .spoke-dot, .spoke:focus-visible .spoke-dot, .spoke.is-selected .spoke-dot { fill: var(--accent); fill-opacity: 1; }
 .spoke.is-selected .spoke-line { stroke: var(--accent); stroke-opacity: 1; stroke-width: 3; }
-.spoke.is-selected .spoke-label, .spoke.is-selected .spoke-index { fill: var(--accent); font-weight: 600; }
+.spoke.is-selected .spoke-label, .spoke.is-selected .spoke-index { fill: var(--accent-text); font-weight: 600; }
 .spoke:focus-visible .spoke-line { stroke: var(--accent); stroke-width: 3; stroke-dasharray: 3 3; }
-.wheel-name { margin: 2px 0 8px; font-size: 22px; font-weight: 500; }
+.detail-name { margin: 2px 0 8px; font-size: 22px; font-weight: 500; }
 .eyebrow-inline { font: 600 10px var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 .small { font-size: 13px; }
 @media (max-width: 480px) {
@@ -112,19 +112,23 @@ a { color: var(--accent); }
   .spoke-index { display: block; font-size: 15px; }
   .wheel-hub-t { font-size: 16px; }
 }
-@media (prefers-color-scheme: dark) {
-  .spoke.is-selected .spoke-label, .spoke.is-selected .spoke-index { fill: #e05a4b; }
-}
 
-.balances { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 12px 0; }
-@media (max-width: 560px) { .balances { grid-template-columns: 1fr; } }
+.balances { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 12px 0; }
+@media (max-width: 900px) { .balances { grid-template-columns: 1fr; } }
 .balance { text-align: center; }
 .pans { display: flex; justify-content: space-between; gap: 6px; }
 .pan, .misstep { font: 14px var(--serif); background: none; border: 1px solid var(--rule); border-radius: 999px; padding: 4px 12px; color: var(--ink); cursor: pointer; }
-.pan.is-selected, .misstep.is-selected { border-color: var(--accent); color: var(--accent); }
+.pan { white-space: nowrap; }
+.pan.is-selected, .misstep.is-selected { border-color: var(--accent-text); color: var(--accent-text); font-weight: 600; background: color-mix(in srgb, var(--accent) 10%, transparent); }
 .pan:focus-visible, .misstep:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.beam { width: 100%; height: auto; display: block; }
-.beam-line { stroke: var(--ink); stroke-opacity: .5; }
-.fulcrum { fill: var(--ink); fill-opacity: .5; }
+.beam { width: 100%; height: 24px; display: block; }
+.beam-line { stroke: var(--ink); stroke-opacity: .5; transform-box: view-box; transform-origin: 60px 14px; transition: transform var(--ease); }
+.balance.is-tilt-left .beam-line { transform: rotate(-6deg); }
+.balance.is-tilt-right .beam-line { transform: rotate(6deg); }
+.fulcrum { fill: var(--ink); fill-opacity: .3; }
+.chudan-mark { fill: var(--accent); }
 .missteps { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; }
 .balance-detail { border-top: 1px solid var(--rule); padding-top: 10px; }
+@media (prefers-color-scheme: dark) {
+  .pan, .misstep { border-color: color-mix(in srgb, var(--ink) 35%, var(--paper)); }
+}

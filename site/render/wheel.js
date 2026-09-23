@@ -29,7 +29,7 @@ export function renderWheel(section, ctx) {
       grp.setAttribute("aria-pressed", "true");
       const ex = ctx.exercisesFor(item.lesson);
       const children = [
-        el("h4", { class: "wheel-name" }, [item.name]),
+        el("h4", { class: "detail-name" }, [item.name]),
         el("p", {}, [item.core]),
         el("p", { class: "image" }, [el("span", { class: "eyebrow-inline" }, ["Image "]), item.image]),
         ex.length ? el("p", { class: "trains" }, [el("span", { class: "eyebrow-inline" }, ["Trains with "]), ...ex.flatMap((e, k) => [k ? " · " : "", el("strong", {}, [e.name]), ": ", e.text])]) : null,
