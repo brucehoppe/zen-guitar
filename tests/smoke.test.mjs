@@ -64,3 +64,17 @@ test("app.css zeroes motion under prefers-reduced-motion", async () => {
   assert.match(block, /transition-duration:\s*0ms/);
   assert.match(block, /animation-duration:\s*0ms/);
 });
+
+test("the landing carries the hero poster with alt text and a relative src, and no stage does", async () => {
+  const js = await readFile(new URL("../site/app.js", import.meta.url), "utf8");
+  const landing = js.match(/function renderLanding\(\)\s*\{([\s\S]*?)\n\}/);
+  assert.ok(landing, "renderLanding not found in app.js");
+  const img = landing[1].match(/el\("img",\s*\{([^}]*class:\s*"hero"[^}]*)\}/);
+  assert.ok(img, "renderLanding should build an img.hero");
+  const attr = (name) => img[1].match(new RegExp(`\\b${name}:\\s*"([^"]*)"`))?.[1];
+  assert.ok(attr("alt")?.trim(), "hero needs a non-empty alt");
+  assert.match(attr("src") ?? "", /^\.\/[^/]/, "hero src must be relative (./…)");
+  await access(new URL(`../site/${attr("src").slice(2)}`, import.meta.url));
+  const outside = js.replace(landing[0], "");
+  assert.doesNotMatch(outside, /class:\s*"hero"/, "the hero belongs to the landing only");
+});
