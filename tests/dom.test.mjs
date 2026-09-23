@@ -204,13 +204,29 @@ test("renderTabs exposes tabs, shows one panel, and switches on click", () => {
   assert.ok(panels[0].hidden && !panels[1].hidden);
 });
 
-test("renderCards flips on click and reports aria-pressed", () => {
+test("renderTabs moves aria-selected and focus with ArrowRight", () => {
+  const tab = (id, n) => ({ id, label: id, intro: "x", section: { type: "table", id, heading: id, columns: ["L", "C"], rows: Array.from({ length: n }, (_, i) => ({ cells: [`${id}${i}`, "c"] })) } });
+  const t = renderTabs({ type: "tabs", id: "hhh", heading: "HHH", tabs: [tab("head", 2), tab("hand", 1), tab("heart", 1)] }, ctx);
+  const tabs = t.querySelectorAll("button[role=\"tab\"]");
+  tabs[0].dispatch("keydown", { key: "ArrowRight" });
+  assert.equal(tabs[1].getAttribute("aria-selected"), "true");
+  assert.equal(tabs[0].getAttribute("aria-selected"), "false");
+  assert.equal(document.activeElement, tabs[1]);
+});
+
+test("renderCards flips on click, reports aria-pressed, and hides the inactive face", () => {
   const c = renderCards({ type: "cards", id: "dualities", heading: "Six", items: [{ lesson: "silence", front: "Sound and silence", back: "Every silence equals every sound." }] }, ctx);
   const card = c.querySelector("button.card");
+  const front = card.querySelector(".card-front");
+  const back = card.querySelector(".card-back");
   assert.equal(card.getAttribute("aria-pressed"), "false");
+  assert.equal(front.getAttribute("aria-hidden"), "false");
+  assert.equal(back.getAttribute("aria-hidden"), "true");
   card.dispatch("click");
   assert.equal(card.getAttribute("aria-pressed"), "true");
   assert.ok(card.classList.contains("is-flipped"));
+  assert.equal(front.getAttribute("aria-hidden"), "true");
+  assert.equal(back.getAttribute("aria-hidden"), "false");
   assert.match(c.textContent, /Every silence/);
 });
 

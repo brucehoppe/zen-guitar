@@ -3,13 +3,17 @@ import { el, heading } from "./dom.js";
 
 export function renderCards(section) {
   const cards = section.items.map((it) => {
-    const b = el("button", { type: "button", class: "card", "aria-pressed": "false", "data-lesson": it.lesson ?? null }, [
-      el("span", { class: "card-front" }, [it.front]),
-      el("span", { class: "card-back" }, [it.back]),
+    const front = el("span", { class: "card-front", "aria-hidden": "false" }, [
+      it.front,
+      el("span", { class: "card-turn", "aria-hidden": "true" }, ["↻"]),
     ]);
+    const back = el("span", { class: "card-back", "aria-hidden": "true" }, [it.back]);
+    const b = el("button", { type: "button", class: "card", "aria-pressed": "false", "data-lesson": it.lesson ?? null }, [front, back]);
     b.addEventListener("click", () => {
       const on = b.classList.toggle("is-flipped");
       b.setAttribute("aria-pressed", on ? "true" : "false");
+      front.setAttribute("aria-hidden", on ? "true" : "false");
+      back.setAttribute("aria-hidden", on ? "false" : "true");
     });
     return b;
   });

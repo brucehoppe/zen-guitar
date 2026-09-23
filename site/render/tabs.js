@@ -12,12 +12,16 @@ export function renderTabs(section, ctx) {
     const tab = el("button", { type: "button", role: "tab", id: `tab-${t.id}`, "aria-controls": `panel-${t.id}`, "aria-selected": "false", tabindex: "-1" }, [t.label]);
     tab.addEventListener("click", () => select(i));
     tab.addEventListener("keydown", (e) => {
-      const n = e.key === "ArrowRight" ? (i + 1) % tabs.length : e.key === "ArrowLeft" ? (i - 1 + tabs.length) % tabs.length : null;
+      const n = e.key === "ArrowRight" ? (i + 1) % tabs.length
+        : e.key === "ArrowLeft" ? (i - 1 + tabs.length) % tabs.length
+        : e.key === "Home" ? 0
+        : e.key === "End" ? tabs.length - 1
+        : null;
       if (n !== null) { e.preventDefault(); select(n); tabs[n].focus(); }
     });
-    const panel = el("div", { role: "tabpanel", id: `panel-${t.id}`, "aria-labelledby": `tab-${t.id}` }, [
+    const panel = el("div", { role: "tabpanel", id: `panel-${t.id}`, "aria-labelledby": `tab-${t.id}`, tabindex: "0" }, [
       el("p", { class: "muted small" }, [t.intro]),
-      renderTable(t.section, ctx),
+      renderTable(t.section, ctx, { noHeading: true }),
     ]);
     tabs.push(tab); panels.push(panel);
   });

@@ -1,5 +1,5 @@
 // site/render/panel.js
-import { el, svg, heading } from "./dom.js";
+import { el, heading } from "./dom.js";
 import { renderTable } from "./table.js";
 import { renderList } from "./list.js";
 import { renderRecall } from "./recall.js";
@@ -34,7 +34,7 @@ export function renderStage(stage, ctx) {
   ]);
   const sections = stage.sections.map((s) => (RENDERERS[s.type] ?? fallback)(s, ctx));
   const emblem = stage.emblem && EMBLEMS[stage.emblem]
-    ? svg("svg", { viewBox: "0 0 200 200", class: "emblem", "aria-hidden": "true" }, [svg("path", { d: EMBLEMS[stage.emblem], class: "brush" })])
+    ? el("span", { class: "emblem", lang: "ja", "aria-hidden": "true" }, [EMBLEMS[stage.emblem]])
     : null;
   return el("article", { class: "stage-panel", "data-stage": stage.id }, [emblem, head, ...sections, renderRecall(stage)]);
 }
