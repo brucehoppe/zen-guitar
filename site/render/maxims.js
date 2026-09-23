@@ -2,7 +2,7 @@
 import { el, heading } from "./dom.js";
 
 export function renderMaxims(section, ctx) {
-  const hint = el("p", { class: "hint" }, ["Hover or focus a line to trace it back to its stage."]);
+  const hint = el("p", { class: "hint" }, ["Hover a line to see its stage; open it to go there."]);
   const trace = el("p", { class: "trace", "aria-live": "polite" });
   const items = ctx.maxims.map((m) => {
     const lesson = m.lesson ? ctx.lessons[m.lesson] : null;
