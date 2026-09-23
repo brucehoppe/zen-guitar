@@ -44,8 +44,12 @@ test("--muted meets 4.5:1 body-text contrast in both colour schemes", async () =
   const lightPaper = hex(lightMatch[1]), lightInk = hex(lightMatch[2]);
   const darkPaper = hex(darkMatch[1]), darkInk = hex(darkMatch[2]);
 
-  const lightMuted = mix(lightInk, lightPaper, 70);
-  const darkMuted = mix(darkInk, darkPaper, 55);
+  const mutedPcts = [...css.matchAll(/--muted:\s*color-mix\(in srgb,\s*var\(--ink\)\s*(\d+(?:\.\d+)?)%/g)].map((m) => Number(m[1]));
+  assert.equal(mutedPcts.length, 2, "expected two --muted declarations (light root, dark override)");
+  const [lightPct, darkPct] = mutedPcts;
+
+  const lightMuted = mix(lightInk, lightPaper, lightPct);
+  const darkMuted = mix(darkInk, darkPaper, darkPct);
 
   assert.ok(contrast(lightMuted, hex("f6f1e7")) >= 4.5, "light --muted must reach 4.5:1 on #f6f1e7");
   assert.ok(contrast(darkMuted, hex("161513")) >= 4.5, "dark --muted must reach 4.5:1 on #161513");

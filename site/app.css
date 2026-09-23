@@ -7,11 +7,11 @@
 @font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 600; font-display: swap; src: url("./assets/fonts/source-sans-3-latin-600-normal.woff2") format("woff2"); }
 
 body::before {
-  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1; opacity: .35;
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1; opacity: .6;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 @media (prefers-color-scheme: dark) {
-  body::before { opacity: .2; }
+  body::before { display: none; } /* the grain vanished on dark paper; keep the page plain */
 }
 
 :root {
@@ -160,8 +160,9 @@ a { color: var(--accent-text); }
 .mountains { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .mountain { margin: 0; text-align: center; font-size: 13px; }
 .mountain-svg { width: 100%; max-width: 160px; height: auto; margin: 0 auto; display: block; opacity: .8; }
+@media (max-width: 480px) { .mountain { font-size: 12px; } }
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
-.card { display: grid; min-height: 170px; perspective: 800px; background: none; border: 0; padding: 0; text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.card { display: grid; min-height: 120px; perspective: 800px; background: none; border: 0; padding: 0; text-align: left; cursor: pointer; font: inherit; color: inherit; }
 .card-front, .card-back { grid-area: 1 / 1; position: static; display: grid; place-items: center; padding: 14px; border: 1px solid var(--rule); border-radius: 8px; backface-visibility: hidden; transition: transform var(--ease); background: var(--paper); }
 .card-front { position: relative; font-size: 18px; font-weight: 500; text-align: center; }
 .card-back { transform: rotateY(180deg); font-size: 14px; }
