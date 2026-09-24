@@ -1,6 +1,8 @@
-// The wheel is drawn in a 340-unit viewBox. OUTER leaves room outside the rim for the
-// 12.5-unit spoke labels (see .spoke-label in app.css and tests/wheel-geometry.test.mjs).
-export const WHEEL = { size: 340, cx: 170, cy: 170, inner: 34, outer: 105 };
+// The wheel is centred on (170, 170). Its viewBox is wider than it is tall and reaches just
+// far enough on every side for the longest 15-unit spoke labels (.spoke-label in app.css);
+// tests/wheel-geometry.test.mjs proves no label leaves it. Rendered 380px or wider, a
+// viewBox unit is at least a pixel, so the labels are 15px or more on screen.
+export const WHEEL = { cx: 170, cy: 170, inner: 34, outer: 110, view: { x: -20, y: 14, w: 380, h: 312 } };
 
 export function spokes(count, inner, outer, cx, cy) {
   return Array.from({ length: count }, (_, i) => {

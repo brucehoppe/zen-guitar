@@ -1,12 +1,12 @@
 import { el, svg, heading } from "./dom.js";
 import { spokes, splitLabel, WHEEL } from "./wheel-geometry.js";
 
-const { cx: CX, cy: CY, inner: INNER, outer: OUTER, size: SIZE } = WHEEL;
+const { cx: CX, cy: CY, inner: INNER, outer: OUTER, view: VIEW } = WHEEL;
 
 export function renderWheel(section, ctx) {
   const detail = el("div", { class: "wheel-detail", "aria-live": "polite" }, [el("p", { class: "muted" }, ["Choose a spoke."])]);
   const geo = spokes(section.items.length, INNER, OUTER, CX, CY);
-  const root = svg("svg", { viewBox: `0 0 ${SIZE} ${SIZE}`, class: "wheel", role: "group", "aria-label": section.heading });
+  const root = svg("svg", { viewBox: `${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`, class: "wheel", role: "group", "aria-label": section.heading });
   root.append(
     svg("circle", { cx: CX, cy: CY, r: OUTER, class: "wheel-rim" }),
     svg("circle", { cx: CX, cy: CY, r: INNER, class: "wheel-hub" }),

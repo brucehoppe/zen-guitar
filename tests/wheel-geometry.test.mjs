@@ -15,17 +15,20 @@ test("twelve spokes, first at 12 o'clock, labels anchored by side", () => {
 });
 
 // Estimated label box for the real stage-2 point names, anchored by side, must stay
-// inside the wheel's viewBox with no slack. The label font is 12.5 units (.spoke-label
-// in app.css); Source Sans 3 averages about 0.57em per character, so 7.15 units, and a
-// wrapped label's second line drops 1.1em = 13.75 units. This catches "Follow-through"
-// or "Stages and plateaus" running past the edge if the rim or font grows again.
+// inside the wheel's viewBox with no slack. The label size is read from .spoke-label in
+// app.css; Source Sans 3 averages about 0.57em per character, a wrapped label's second
+// line drops 1.1em, and each line is checked from its cap height (1em above the
+// baseline) to its descender (0.25em below). This catches "Follow-through",
+// "Collaboration" or "Stages and plateaus" running past the edge if the rim or font grows.
 test("every spoke label's estimated tspan lines stay inside the wheel viewBox", async () => {
   const css = await readFile(new URL("../site/app.css", import.meta.url), "utf8");
   const FONT = Number(css.match(/\.spoke-label \{ font: ([\d.]+)px/)[1]);
-  assert.equal(FONT, 12.5);
+  assert.ok(FONT >= 15, "labels are at least 15 units");
   const CHAR_W = FONT * 0.572;
   const LINE_H = FONT * 1.1;
-  const { size, cx, cy, inner, outer } = WHEEL;
+  const { cx, cy, inner, outer, view } = WHEEL;
+  assert.equal(view.x + view.w / 2, cx, "wheel centred horizontally");
+  assert.equal(view.y + view.h / 2, cy, "wheel centred vertically");
   const points = stage2.sections.find((sec) => sec.type === "wheel").items;
   const labels = points.map((p) => p.name);
   const s = spokes(labels.length, inner, outer, cx, cy);
@@ -35,9 +38,9 @@ test("every spoke label's estimated tspan lines stay inside the wheel viewBox", 
       const left = sp.anchor === "end" ? sp.lx - width : sp.anchor === "middle" ? sp.lx - width / 2 : sp.lx;
       const right = left + width;
       const ly = sp.ly + li * LINE_H;
-      assert.ok(left >= 0, `spoke ${i} ("${line}") box left ${left} left of viewBox`);
-      assert.ok(right <= size, `spoke ${i} ("${line}") box right ${right} past viewBox`);
-      assert.ok(ly - FONT >= 0 && ly <= size, `spoke ${i} ("${line}") line ${ly} out of viewBox`);
+      assert.ok(left >= view.x, `spoke ${i} ("${line}") left ${left} past the viewBox`);
+      assert.ok(right <= view.x + view.w, `spoke ${i} ("${line}") right ${right} past the viewBox`);
+      assert.ok(ly - FONT >= view.y && ly + FONT * 0.25 <= view.y + view.h, `spoke ${i} ("${line}") line ${ly} out of the viewBox`);
     });
   });
 });
