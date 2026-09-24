@@ -20,6 +20,8 @@ const APP_JS = /(src="\.\/app\.js)"/;
 const APP_CSS = /(href="\.\/app\.css)"/;
 // sed -E "s#(from \"\.{1,2}/[^\"]+\.js)\"#\1?v=${v}\"#g" on every .js file
 const FROM_JS = /(from "\.{1,2}\/[^"]+\.js)"/g;
+// sed -E "s#(src: \"\./assets/hero\.jpg)\"#\1?v=${v}\"#" site/app.js
+const HERO = /(src: "\.\/assets\/hero\.jpg)"/;
 
 async function jsFiles(dir) {
   const out = [];
@@ -40,12 +42,14 @@ async function versionCopy(root, v) {
     const src = await readFile(f, "utf8");
     await writeFile(f, src.replace(FROM_JS, `$1?v=${v}"`));
   }
+  const app = join(root, "app.js");
+  await writeFile(app, (await readFile(app, "utf8")).replace(HERO, `$1?v=${v}"`));
 }
 
 // every relative module specifier in `from "…"` form, with or without a query
 const RELATIVE_FROM = /from "(\.{1,2}\/[^"]+)"/g;
 
-test("the deploy rewrite versions app.js, app.css and every relative module import", async () => {
+test("the deploy rewrite versions app.js, app.css, the hero image and every relative module import", async () => {
   const root = await mkdtemp(join(tmpdir(), "zen-guitar-deploy-"));
   try {
     await cp(SITE, root, { recursive: true });
@@ -72,6 +76,8 @@ test("the deploy rewrite versions app.js, app.css and every relative module impo
       assert.doesNotMatch(src, /^\s*import\s+["']/m, `${f.slice(root.length)} uses a bare import "…" the rewrite would miss`);
     }
     assert.ok(imports > 20, `expected the site's module graph to be rewritten, saw ${imports} imports`);
+    const app = await readFile(join(root, "app.js"), "utf8");
+    assert.match(app, new RegExp(`src: "\\./assets/hero\\.jpg\\?v=${V}"`), "the hero image should be versioned too");
   } finally {
     await rm(root, { recursive: true, force: true });
   }
@@ -82,6 +88,7 @@ test("the workflow's sed commands and this test's regexes stay in sync", async (
   assert.match(yml, /s#\(src=\\"\\\.\/app\\\.js\)\\"#\\1\?v=\$\{v\}\\"#/, "app.js sed changed");
   assert.match(yml, /s#\(href=\\"\\\.\/app\\\.css\)\\"#\\1\?v=\$\{v\}\\"#/, "app.css sed changed");
   assert.match(yml, /s#\(from \\"\\\.\{1,2\}\/\[\^\\"\]\+\\\.js\)\\"#\\1\?v=\$\{v\}\\"#g/, "module import sed changed");
+  assert.match(yml, /s#\(src: \\"\\\.\/assets\/hero\\\.jpg\)\\"#\\1\?v=\$\{v\}\\"#/, "hero image sed changed");
   // the version step runs in the deploy job, before the upload
   const deploy = yml.slice(yml.indexOf("  deploy:"));
   assert.ok(deploy.indexOf("Version module URLs") > 0, "version step belongs to the deploy job");

@@ -301,15 +301,16 @@ test("practice groups exercises by belt in order and links each trains-tag to it
 });
 
 const { renderMatch } = await import("../site/render/match.js");
-test("match locks correct pairs into an answer key, removes the lesson choice, and clears wrong ones", () => {
+test("match locks correct pairs into an answer key, removes the lesson choice, and keeps the pick after a miss", () => {
   const c = { ...ctx, lessons: { a: { stage: 1, section: "s", label: "Alpha" }, b: { stage: 2, section: "s", label: "Beta" } }, shuffle: (x) => x };
   const m = renderMatch({ type: "match", id: "match", heading: "Match", items: [{ image: "Teacup", lesson: "a" }, { image: "Bulb", lesson: "b" }] }, c);
   const imgs = m.querySelectorAll("button.match-img"), les = m.querySelectorAll("button.match-lesson");
   assert.equal(les[0].hasAttribute("aria-pressed"), false, "lesson buttons carry no aria-pressed");
   imgs[0].dispatch("click"); les[1].dispatch("click");           // wrong
   assert.ok(les[1].classList.contains("is-wrong"));
-  assert.ok(!imgs[0].classList.contains("is-selected"));
-  imgs[0].dispatch("click"); les[0].dispatch("click");           // right
+  assert.ok(imgs[0].classList.contains("is-selected"), "the image stays picked after a miss");
+  assert.equal(imgs[0].getAttribute("aria-pressed"), "true");
+  les[0].dispatch("click");                                       // right, without re-picking
   assert.ok(imgs[0].classList.contains("is-matched"));
   assert.equal(imgs[0].getAttribute("disabled"), "");
   assert.equal(imgs[0].textContent, "Teacup → Alpha");
@@ -324,7 +325,7 @@ test("match reports choosing a lesson before an image", () => {
   assert.equal(m.querySelector(".match-status").textContent, "Choose an image first.");
 });
 
-test("match's completion text is hard-coded and the grid marks itself complete", () => {
+test("match's completion text counts in words and the grid marks itself complete", () => {
   const items = Array.from({ length: 10 }, (_, i) => ({ image: `Item ${i}`, lesson: `l${i}` }));
   const lessons = Object.fromEntries(items.map((it, i) => [it.lesson, { stage: 1, section: "s", label: `Lesson ${i}` }]));
   const c = { ...ctx, lessons, shuffle: (x) => x };
@@ -337,6 +338,36 @@ test("match's completion text is hard-coded and the grid marks itself complete",
   }
   assert.equal(m.querySelector(".match-status").textContent, "All ten. Now go play.");
   assert.ok(grid.classList.contains("is-complete"));
+});
+
+test("match's Start over rebuilds a fresh round", () => {
+  const c = { ...ctx, lessons: { a: { stage: 1, section: "s", label: "Alpha" }, b: { stage: 2, section: "s", label: "Beta" } }, shuffle: (x) => x };
+  const m = renderMatch({ type: "match", id: "match", heading: "Match", items: [{ image: "Teacup", lesson: "a" }, { image: "Bulb", lesson: "b" }] }, c);
+  const grid = m.querySelector(".match");
+  for (let i = 0; i < 2; i++) { m.querySelectorAll("button.match-img")[i].dispatch("click"); m.querySelectorAll("button.match-lesson")[0].dispatch("click"); }
+  assert.ok(grid.classList.contains("is-complete"));
+  m.querySelector("button.match-restart").dispatch("click");
+  assert.ok(!grid.classList.contains("is-complete"));
+  assert.equal(m.querySelectorAll("button.match-lesson").length, 2, "both lesson choices are back");
+  assert.equal(m.querySelectorAll("button.match-img").filter((b) => b.classList.contains("is-matched")).length, 0);
+  assert.equal(m.querySelector(".match-status").textContent, "A fresh round.");
+  assert.equal(document.activeElement, m.querySelector("button.match-img"), "focus lands on the first image");
+});
+
+test("renderTabs puts a bare table in each panel, with no nested section", () => {
+  const tab = (id) => ({ id, label: id, intro: "x", section: { type: "table", id, heading: id, columns: ["L", "C"], rows: [{ cells: [`${id}0`, "c"] }] } });
+  const t = renderTabs({ type: "tabs", id: "hhh", heading: "HHH", tabs: [tab("head"), tab("hand")] }, ctx);
+  const panel = t.querySelector("div[role=\"tabpanel\"]");
+  assert.equal(panel.querySelector("section"), null, "no section.sec inside a tab panel");
+  assert.ok(panel.querySelector("table.tbl"));
+});
+
+test("maxims and practice link lessons through their tab and keep again", () => {
+  const lessons = { mastery: { stage: 3, section: "hhh", tab: "heart", label: "Mastery" } };
+  const m = renderMaxims({ type: "maxims", id: "maxims", heading: "The Way" }, { ...ctx, lessons, maxims: [{ text: "Not yet.", lesson: "mastery" }], again: true });
+  assert.equal(m.querySelector("a").getAttribute("href"), "#/3/hhh/heart?again");
+  const p = renderPractice({ ...ctx, lessons, again: false, exercises: [{ name: "X", text: "y", belt: "black", lessons: ["mastery"] }], lastStage: null });
+  assert.equal(p.querySelector("a.trains-tag").getAttribute("href"), "#/3/hhh/heart");
 });
 
 test("renderWheel lists the point names, numbered, and a name selects its spoke", () => {

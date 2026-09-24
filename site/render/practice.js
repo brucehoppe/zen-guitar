@@ -1,14 +1,15 @@
 // site/render/practice.js
 import { el, backLink } from "./dom.js";
+import { lessonHref } from "../router.js";
 
 const BELTS = [["white", "White belt"], ["practice", "Practice stage"], ["black", "Black belt"], ["barrier", "Barrier"]];
 
-function trainsTags(lessonIds, lessons) {
+function trainsTags(lessonIds, lessons, again) {
   return lessonIds.flatMap((l, i) => {
     const lesson = lessons[l];
     const label = lesson?.label ?? l;
     const tag = lesson
-      ? el("a", { class: "trains-tag", href: `#/${lesson.stage}/${lesson.section}` }, [label])
+      ? el("a", { class: "trains-tag", href: lessonHref(lesson, again) }, [label])
       : el("span", { class: "trains-tag" }, [label]);
     return i === 0 ? [tag] : [", ", tag];
   });
@@ -22,7 +23,7 @@ export function renderPractice(ctx) {
       el("h3", { class: "sec-h" }, [label]),
       el("ul", { class: "practice" }, items.map((e) => el("li", {}, [
         el("strong", {}, [e.name]), ": ", e.text, " ",
-        ...trainsTags(e.lessons, ctx.lessons),
+        ...trainsTags(e.lessons, ctx.lessons, ctx.again),
       ]))),
     ]);
   }).filter(Boolean);

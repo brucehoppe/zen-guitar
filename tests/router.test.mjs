@@ -1,14 +1,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseHash, buildHash, normalize, nextStage, prevStage, canonicalHash, homeHref } from "../site/router.js";
+import { parseHash, buildHash, normalize, nextStage, prevStage, canonicalHash, homeHref, lessonHref } from "../site/router.js";
 
-const stages = [1, 2, 3, 4, 5].map((id) => ({ id, sections: [{ id: "a" }, { id: "b" }] }));
+const stages = [1, 2, 3, 4, 5].map((id) => ({ id, sections: [{ id: "a" }, { id: "b" }, { id: "t", tabs: [{ id: "x" }, { id: "y" }] }] }));
 
 test("parseHash reads stage, section and again", () => {
-  assert.deepEqual(parseHash("#/2/b"), { view: "stage", stage: 2, section: "b", again: false, landing: false });
-  assert.deepEqual(parseHash("#/1?again"), { view: "stage", stage: 1, section: null, again: true, landing: false });
-  assert.deepEqual(parseHash("#/glossary"), { view: "glossary", stage: 1, section: null, again: false });
-  assert.deepEqual(parseHash("#/practice"), { view: "practice", stage: 1, section: null, again: false });
+  assert.deepEqual(parseHash("#/2/b"), { view: "stage", stage: 2, section: "b", tab: null, again: false, landing: false });
+  assert.deepEqual(parseHash("#/1?again"), { view: "stage", stage: 1, section: null, tab: null, again: true, landing: false });
+  assert.deepEqual(parseHash("#/glossary"), { view: "glossary", stage: 1, section: null, tab: null, again: false });
+  assert.deepEqual(parseHash("#/practice"), { view: "practice", stage: 1, section: null, tab: null, again: false });
 });
 
 test("parseHash treats garbage as stage 1", () => {
@@ -23,12 +23,12 @@ test("parseHash treats garbage as stage 1", () => {
 
 test("normalize drops unknown sections and clamps stage", () => {
   assert.deepEqual(normalize({ view: "stage", stage: 2, section: "zzz", again: false }, stages),
-    { view: "stage", stage: 2, section: null, again: false, landing: false });
+    { view: "stage", stage: 2, section: null, tab: null, again: false, landing: false });
   assert.equal(normalize({ view: "stage", stage: 7, section: null, again: false }, stages).stage, 1);
 });
 
 test("buildHash round-trips", () => {
-  for (const h of ["#/", "#/?again", "#/1", "#/3/b", "#/1?again", "#/glossary", "#/practice"]) {
+  for (const h of ["#/", "#/?again", "#/1", "#/3/b", "#/3/t/y", "#/3/t/y?again", "#/1?again", "#/glossary", "#/practice"]) {
     assert.equal(buildHash(parseHash(h)), h);
   }
 });
@@ -40,21 +40,23 @@ test("next and prev wrap the ring, and wrapping forward sets again", () => {
 });
 
 test("an empty path is the landing, with or without again", () => {
-  assert.deepEqual(parseHash("#/?again"), { view: "stage", stage: 1, section: null, again: true, landing: true });
+  assert.deepEqual(parseHash("#/?again"), { view: "stage", stage: 1, section: null, tab: null, again: true, landing: true });
   assert.equal(parseHash("#/").landing, true);
   assert.equal(parseHash("").landing, true);
   assert.equal(parseHash("#/1").landing, false);
   assert.equal(buildHash({ view: "stage", stage: 1, section: null, again: true, landing: true }), "#/?again");
-  assert.deepEqual(normalize(parseHash("#/?again"), stages), { view: "stage", stage: 1, section: null, again: true, landing: true });
+  assert.deepEqual(normalize(parseHash("#/?again"), stages), { view: "stage", stage: 1, section: null, tab: null, again: true, landing: true });
 });
 
 test("canonicalHash rewrites unknown stages, sections and views, and leaves canonical hashes alone", () => {
   assert.equal(canonicalHash("#/9/zzz", stages), "#/1");
   assert.equal(canonicalHash("#/2/nothing", stages), "#/2");
+  assert.equal(canonicalHash("#/2/b/x", stages), "#/2/b", "a tab on an untabbed section is dropped");
+  assert.equal(canonicalHash("#/2/t/zzz", stages), "#/2/t", "an unknown tab is dropped");
   assert.equal(canonicalHash("#/2/b?again&x", stages), "#/2/b?again");
   assert.equal(canonicalHash("#/glossary/extra", stages), "#/glossary");
   assert.equal(canonicalHash("#/zzz", stages), "#/1");
-  for (const h of ["#/2", "#/2/b", "#/3?again", "#/glossary", "#/practice", "#/?again"]) {
+  for (const h of ["#/2", "#/2/b", "#/2/t/x", "#/3?again", "#/glossary", "#/practice", "#/?again"]) {
     assert.equal(canonicalHash(h, stages), null, `${h} is already canonical`);
   }
   for (const h of ["", "#", "#/"]) assert.equal(canonicalHash(h, stages), null, `"${h}" is the landing and stays as typed`);
@@ -65,4 +67,19 @@ test("homeHref returns to the last stage only from Glossary or Practice", () => 
   assert.equal(homeHref("practice", "#/2/missteps?again"), "#/2/missteps?again");
   assert.equal(homeHref("glossary", null), "#/", "no stage visited yet");
   assert.equal(homeHref("stage", "#/3"), "#/", "on stages and the landing it stays the landing");
+  assert.equal(homeHref("stage", "#/3?again", true), "#/?again", "a second walk stays a second walk");
+  assert.equal(homeHref("glossary", "#/3?again", false), "#/3?again", "from a view, again rides on the stored route");
+});
+
+test("normalize keeps a tab only inside a tabbed section", () => {
+  assert.equal(normalize(parseHash("#/3/t/y"), stages).tab, "y");
+  assert.equal(normalize(parseHash("#/3/t/zzz"), stages).tab, null);
+  assert.equal(normalize(parseHash("#/3/b/y"), stages).tab, null);
+});
+
+test("lessonHref opens the lesson's section, its tab when it has one, and keeps again", () => {
+  assert.equal(lessonHref({ stage: 2, section: "points" }), "#/2/points");
+  assert.equal(lessonHref({ stage: 3, section: "hhh", tab: "heart" }), "#/3/hhh/heart");
+  assert.equal(lessonHref({ stage: 3, section: "hhh", tab: "heart" }, true), "#/3/hhh/heart?again");
+  assert.equal(lessonHref({ stage: 2, section: "points" }, true), "#/2/points?again");
 });

@@ -29,8 +29,15 @@ test("lessons point at real stages and sections", () => {
   for (const [id, l] of Object.entries(lessons)) {
     const s = stages.find((x) => x.id === l.stage);
     assert.ok(s, `${id}: stage ${l.stage}`);
-    if (s) assert.ok(s.sections.some((sec) => sec.id === l.section), `${id}: section ${l.section}`);
+    const sec = s?.sections.find((x) => x.id === l.section);
+    assert.ok(sec, `${id}: section ${l.section}`);
     assert.ok(l.label, `${id}: label`);
+    // a lesson inside a tabbed section names the tab whose rows carry it, so links can open that tab
+    if (sec?.tabs) {
+      const tab = sec.tabs.find((t) => t.id === l.tab);
+      assert.ok(tab, `${id}: tab ${l.tab} in ${l.section}`);
+      assert.ok(tab && tab.section.rows.some((r) => r.lesson === id), `${id}: row missing from tab ${l.tab}`);
+    } else assert.equal(l.tab, undefined, `${id}: tab on an untabbed section`);
   }
 });
 

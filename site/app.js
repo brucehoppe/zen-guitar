@@ -23,7 +23,7 @@ let lastStageRoute = null; // hash of the stage last shown this visit (memory on
 
 const ring = buildRing(ringEl, {
   stages,
-  onSelect: (n) => { keepFocus = true; go({ view: "stage", stage: n, section: null, again: current().again }); },
+  onSelect: (n) => { keepFocus = true; go({ view: "stage", stage: n, section: null, tab: null, again: current().again }); },
 });
 
 const koan = createKoan(koanEl);
@@ -53,7 +53,7 @@ function renderLanding() {
     el("p", { class: "intro" }, [again
       ? "You have walked the ring once. The belt is a little softer; that is all that changes. Empty your cup and begin again."
       : "Everyone in this dojo starts at white belt. Empty your cup each visit."]),
-    el("p", { class: "hint" }, [el("button", { class: "begin", onclick: () => go({ view: "stage", stage: 1, section: null, again }) }, [again ? "Begin again" : "Begin"]), ", or use the arrow keys."]),
+    el("p", { class: "hint" }, [el("button", { class: "begin", onclick: () => go({ view: "stage", stage: 1, section: null, tab: null, again }) }, [again ? "Begin again" : "Begin"]), el("span", { class: "needs-keys" }, [", or use the arrow keys."])]),
     el("figure", { class: "hero-fig" }, [
       el("img", { class: "hero", src: "./assets/hero.jpg", alt: "Rats of Chaos of Gridlock. A quiet porch with a guitar, a cushion and a cup of tea facing pine, mountains and a red sun; the CN Tower, a highway of traffic and amplifiers on the other side.", width: "640", height: "426", decoding: "async" }),
       el("figcaption", {}, ["Poster: Rats of Chaos of Gridlock. Practice, listen, tune, play, repeat."]),
@@ -68,7 +68,9 @@ function render() {
   if (canonical) history.replaceState(null, "", canonical);
   navLinks.forEach((a) => a.setAttribute("aria-current", a.getAttribute("href") === `#/${route.view}` ? "page" : "false"));
   if (route.view === "stage" && !route.landing) lastStageRoute = buildHash(route);
-  homeLink.setAttribute("href", homeHref(route.view, lastStageRoute));
+  // On a view, "again" rides on the stage route we came from, so links back keep the worn belt.
+  ctx.again = route.view === "stage" ? route.again : Boolean(lastStageRoute && parseHash(lastStageRoute).again);
+  homeLink.setAttribute("href", homeHref(route.view, lastStageRoute, ctx.again));
   const lastStageDef = lastStageRoute ? stages.find((s) => s.id === parseHash(lastStageRoute).stage) : null;
   ctx.lastStage = lastStageDef ? { title: lastStageDef.title, href: lastStageRoute } : null;
 
@@ -93,16 +95,19 @@ function render() {
   ring.setStage(route.stage);
   panelEl.replaceChildren(atLanding ? renderLanding() : renderStage(stage, ctx));
 
-  if (moved) announceEl.textContent = atLanding ? "Zen Guitar" : stage.title;
   // Every arrival at a stage, including the first one, gets its koan; moving between
-  // sections of the same stage does not.
+  // sections of the same stage does not. The koan is read once, with the title, through
+  // #announce (the only live region), so screen readers hear one sentence, not two.
+  const newKoan = !atLanding && lastStage !== stage.id;
+  if (moved) announceEl.textContent = atLanding ? "Zen Guitar" : newKoan ? `${stage.title}. ${stage.koan}` : stage.title;
   if (atLanding) koan.clear();
-  else if (lastStage !== stage.id) koan.show(stage.koan);
+  else if (newKoan) koan.show(stage.koan);
   lastStage = atLanding ? null : stage.id;
   lastPlace = place;
 
   if (route.section) {
-    // A lesson link lands on its section: scroll there and put focus on its heading.
+    // A lesson link lands on its section: open its tab if it names one, scroll there and put focus on the heading.
+    if (route.tab) document.getElementById(`tab-${route.tab}`)?.click();
     const h = document.getElementById(`sec-${route.section}`);
     if (h) { h.setAttribute("tabindex", "-1"); h.scrollIntoView({ block: "start" }); h.focus({ preventScroll: true }); }
   }
@@ -116,14 +121,15 @@ function render() {
 window.addEventListener("hashchange", render);
 window.addEventListener("keydown", (e) => {
   const route = current();
-  if (route.view !== "stage" || e.altKey || e.metaKey || e.ctrlKey || e.defaultPrevented) return;
+  // Shift+Arrow extends a text selection and a held key auto-repeats; neither should walk the ring.
+  if (route.view !== "stage" || e.altKey || e.metaKey || e.ctrlKey || e.shiftKey || e.repeat || e.defaultPrevented) return;
   if (e.target.closest?.("input, textarea")) return;
   if (e.key === "ArrowRight") {
-    if (route.landing) { go({ view: "stage", stage: 1, section: null, again: route.again }); return; }
+    if (route.landing) { go({ view: "stage", stage: 1, section: null, tab: null, again: route.again }); return; }
     const n = nextStage(route.stage);
-    if (n.again) go({ view: "stage", stage: 1, section: null, again: true, landing: true });
-    else go({ view: "stage", stage: n.stage, section: null, again: route.again });
+    if (n.again) go({ view: "stage", stage: 1, section: null, tab: null, again: true, landing: true });
+    else go({ view: "stage", stage: n.stage, section: null, tab: null, again: route.again });
   }
-  if (e.key === "ArrowLeft") { const n = prevStage(route.stage); go({ view: "stage", stage: n.stage, section: null, again: route.again }); }
+  if (e.key === "ArrowLeft") { const n = prevStage(route.stage); go({ view: "stage", stage: n.stage, section: null, tab: null, again: route.again }); }
 });
 render();
