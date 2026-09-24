@@ -50,11 +50,15 @@ a { color: var(--accent-text); }
 .stage { display: grid; grid-template-columns: clamp(320px, 34vw, 640px) minmax(0, 1fr); column-gap: clamp(32px, 4vw, 96px); align-items: start; width: var(--page); padding: 0 0 40px; margin: 0 auto; }
 .ring-wrap { position: sticky; top: 16px; }
 #ring { width: 100%; height: auto; display: block; transition: transform var(--ease); }
-.koan { text-align: center; font-style: italic; font-size: 1.15rem; color: var(--muted); min-height: 1.6em; margin: 6px 0 0; }
-/* from 820px the ring shows the koan; the HTML koan only speaks to screen readers */
-@media (min-width: 820px) {
-  #koan { position: absolute; width: 1px; height: 1px; min-height: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; padding: 0; border: 0; }
+/* The koan: one line under the ring, two lines of room reserved so nothing jumps.
+   Fade timings match KOAN_TIMING in koan.js (in 400ms, out 600ms). */
+.koan {
+  text-align: center; font: italic 1.15rem/1.45 var(--serif); text-wrap: balance;
+  color: color-mix(in srgb, var(--ink) 85%, var(--paper));
+  min-height: 2.9em; margin: .6rem auto 0; max-width: 24em;
+  opacity: 0; transition: opacity 600ms ease;
 }
+.koan.is-on { opacity: 1; transition-duration: 400ms; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; }
 .panel { min-width: 0; container-type: inline-size; }
 .view { width: var(--page); padding: 0 0 40px; margin: 0 auto; }
@@ -67,15 +71,17 @@ a { color: var(--accent-text); }
 }
 
 .rotor { transition: transform var(--ease); transform-box: view-box; transform-origin: 200px 200px; }
+.belt-edge { fill: none; stroke: var(--ink); stroke-opacity: .15; stroke-width: 1; }
 .marker { cursor: pointer; outline: none; }
 .marker-dot { fill: var(--paper); stroke: var(--ink); stroke-width: 1.5; transition: fill var(--ease), r var(--ease); }
-.marker-n { font: 600 11px var(--sans); fill: var(--ink); dominant-baseline: central; pointer-events: none; }
-.marker.is-current .marker-dot { fill: var(--accent); stroke: var(--accent); r: 11; }
+/* SVG text sizes are viewBox units (400 wide): 20 units is 15px on the smallest 300px ring.
+   The counter-rotation turns with the rotor's timing, so the numbers stay upright mid-turn. */
+.marker-n { font: 600 20px var(--sans); fill: var(--ink); dominant-baseline: central; pointer-events: none; transition: transform var(--ease); transform-box: view-box; transform-origin: 0 0; }
+.marker.is-current .marker-dot { fill: var(--accent); stroke: var(--accent); r: 19; }
 .marker.is-current .marker-n { fill: #fff; }
 .marker.is-hot .marker-dot { stroke: var(--accent); stroke-width: 3; }
-.marker:focus-visible .marker-dot { stroke: var(--accent); stroke-width: 3; stroke-dasharray: 2 2; }
-.koan-svg { font: italic 15px var(--serif); fill: var(--muted); opacity: 0; transition: opacity var(--ease); }
-#ring.koan-on .koan-svg { opacity: 1; }
+.marker-focus { fill: none; stroke: none; }
+.marker:focus-visible .marker-focus { stroke: var(--accent); stroke-width: 3; }
 #ring.is-worn { filter: contrast(.92) saturate(.9); }
 .stage-panel { animation: rise var(--ease) both; position: relative; isolation: isolate; }
 /* Prose keeps a reading measure; figures (wheel, balances, mountains, cards, match) may use the whole panel. */
@@ -118,9 +124,9 @@ a { color: var(--accent-text); }
   .stage.in-stage { grid-template-columns: clamp(300px, 30vw, 560px) minmax(0, 1fr); }
 }
 @media (max-width: 819px) {
-  .koan-svg { display: none; }
-  .marker-dot, .marker.is-current .marker-dot { r: 20; }
-  .marker-n { font-size: 22px; } /* 22 units x 200/400 = 11px on screen */
+  .marker-dot, .marker.is-current .marker-dot { r: 21; }
+  .marker-focus { r: 27; }
+  .marker-n { font-size: 24px; } /* 24 units x 260/400 = 15.6px on screen */
 }
 
 /* The detail box sits directly under the wheel, and moves beside it only when the panel has room for both. */

@@ -61,15 +61,22 @@ test("Enter and Space on a marker select its stage", () => {
   assert.equal(space.defaultPrevented, true);
 });
 
-test("showKoan does nothing under reduced motion", () => {
-  const saved = globalThis.matchMedia;
-  globalThis.matchMedia = () => ({ matches: true });
-  try {
-    const { svgEl, ring } = setup();
-    ring.showKoan("Not yet.");
-    assert.equal(svgEl.querySelector("text.koan-svg").textContent, "");
-    assert.ok(!svgEl.classList.contains("koan-on"));
-  } finally {
-    globalThis.matchMedia = saved;
+test("the ring carries no koan of its own; the HTML #koan line is the only one", () => {
+  const { svgEl, ring } = setup();
+  assert.equal(ring.showKoan, undefined);
+  assert.equal(svgEl.querySelector("text.koan-svg"), null);
+  assert.deepEqual(svgEl.querySelectorAll("text").map((t) => t.getAttribute("class")), Array(5).fill("marker-n"));
+});
+
+test("markers are sized to read: dot r 17 inside a belt wide enough to hold it, with a focus ring", () => {
+  const { svgEl, marker } = setup();
+  const edges = svgEl.querySelectorAll("circle.belt-edge").map((c) => Number(c.getAttribute("r"))).sort((a, b) => a - b);
+  assert.equal(edges.length, 2, "hairline edges on both sides of the belt");
+  const [inner, outer] = edges;
+  for (const n of [1, 2, 3, 4, 5]) {
+    const dot = Number(marker(n).querySelector("circle.marker-dot").getAttribute("r"));
+    assert.equal(dot, 17);
+    assert.ok(142 - dot >= inner && 142 + 21 <= outer, "dots up to r 21 (phones) stay inside the belt");
+    assert.ok(marker(n).querySelector("circle.marker-focus"), `marker ${n} focus ring`);
   }
 });

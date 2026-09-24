@@ -101,7 +101,7 @@ test("the landing carries the captioned hero poster with alt text and a relative
 // faint emblem kanji, which is decoration sized with clamp().
 test("app.css sets no HTML font size in px", async () => {
   const css = await readFile(new URL("../site/app.css", import.meta.url), "utf8");
-  const SVG_TEXT = /^\.(marker-n|koan-svg|wheel-hub-t|spoke-label|spoke-index)$/;
+  const SVG_TEXT = /^\.(marker-n|wheel-hub-t|spoke-label|spoke-index)$/;
   const offenders = [];
   for (const [, selectors, body] of css.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const decls = body.split(";").filter((d) => /^\s*font(-size)?\s*:/.test(d) && /\d(\.\d+)?px/.test(d));

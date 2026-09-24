@@ -2,8 +2,8 @@
 import { svg } from "./render/dom.js";
 import { markerPositions, rotationFor, wornStops, beltPath } from "./ring.js";
 
-const CX = 200, CY = 200, R = 142, WIDTH = 34, SEAM = 3;
-const FADE_MS = 400; // matches --ease in app.css: the koan fades out over this long before its text is cleared
+// WIDTH leaves room for the marker dots (r 17 to 21 units) to sit inside the belt.
+const CX = 200, CY = 200, R = 142, WIDTH = 44, SEAM = 3;
 
 // Each stop carries a belt-stop-N class naming its place in wornStops (0 light, 2 dark),
 // so CSS can recolour the belt for dark mode.
@@ -42,7 +42,8 @@ export function buildRing(svgEl, { stages, onSelect }) {
     const stage = stages[i];
     const g = svg("g", { class: "marker", role: "button", tabindex: "0", "aria-label": `Stage ${stage.id}: ${stage.title}`, "data-stage": stage.id, transform: `translate(${p.x} ${p.y})` }, [
       svg("circle", { r: 40, fill: "transparent", class: "marker-hit" }), // touch target; the dot sits above it
-      svg("circle", { r: 9, class: "marker-dot" }),
+      svg("circle", { r: 25, class: "marker-focus" }), // solid ring, shown only on keyboard focus
+      svg("circle", { r: 17, class: "marker-dot" }),
       svg("text", { class: "marker-n", "text-anchor": "middle" }, [String(stage.id)]),
     ]);
     const go = () => onSelect(stage.id);
@@ -52,13 +53,15 @@ export function buildRing(svgEl, { stages, onSelect }) {
     rotor.append(g);
   });
 
-  const centre = svg("g", { class: "centre" });
-  const koanText = svg("text", { x: CX, y: CY + 4, class: "koan-svg", "text-anchor": "middle" });
-  centre.append(koanText);
+  // Hairline edges on both sides of the belt, so its white end never dissolves into the
+  // paper. They are circles, so they need not turn with the rotor.
+  const edges = svg("g", { class: "belt-edges", "aria-hidden": "true" }, [
+    svg("circle", { cx: CX, cy: CY, r: R + WIDTH / 2, class: "belt-edge" }),
+    svg("circle", { cx: CX, cy: CY, r: R - WIDTH / 2, class: "belt-edge" }),
+  ]);
 
-  svgEl.append(defs, rotor, centre);
+  svgEl.append(defs, edges, rotor);
 
-  let koanTimer = null, clearTimer = null;
   let angle = null; // running total, so the ring always turns the short way
   return {
     setStage(n) {
@@ -68,7 +71,8 @@ export function buildRing(svgEl, { stages, onSelect }) {
       for (const [id, g] of markers) {
         g.classList.toggle("is-current", id === n);
         g.setAttribute("aria-current", id === n ? "step" : "false");
-        // counter-rotate the number so it stays upright
+        // Counter-rotate the number so it stays upright. app.css transitions this with the
+        // same timing as the rotor, so the two cancel out and the number never tilts mid-turn.
         g.querySelector("text").setAttribute("transform", `rotate(${-angle})`);
       }
     },
@@ -81,17 +85,6 @@ export function buildRing(svgEl, { stages, onSelect }) {
     },
     highlight(n) {
       for (const [id, g] of markers) g.classList.toggle("is-hot", n !== null && id === n);
-    },
-    // Returns true when the koan is shown, so callers can mirror it for screen readers.
-    showKoan(text, ms = 1200) {
-      const reduced = globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-      if (reduced || !text) return false;
-      clearTimeout(koanTimer); clearTimeout(clearTimer);
-      koanText.textContent = text;
-      svgEl.classList.add("koan-on");
-      koanTimer = setTimeout(() => { svgEl.classList.remove("koan-on"); }, ms);
-      clearTimer = setTimeout(() => { koanText.textContent = ""; }, ms + FADE_MS);
-      return true;
     },
   };
 }

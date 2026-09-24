@@ -2,6 +2,7 @@
 import { stages, lessons, exercises, maxims, glossary } from "./content/index.js";
 import { parseHash, buildHash, normalize, nextStage, prevStage, canonicalHash } from "./router.js";
 import { buildRing } from "./belt.js";
+import { createKoan } from "./koan.js";
 import { renderStage } from "./render/panel.js";
 import { renderGlossary } from "./render/glossary.js";
 import { renderPractice } from "./render/practice.js";
@@ -10,7 +11,6 @@ import { el } from "./render/dom.js";
 const $ = (id) => document.getElementById(id);
 const ringEl = $("ring"), panelEl = $("panel"), viewEl = $("view"), koanEl = $("koan"), announceEl = $("announce"), stageEl = document.querySelector(".stage");
 const navLinks = [...document.querySelectorAll(".top-nav a")];
-const KOAN_MS = 1200;
 
 // location.hash updates as soon as it is set, before hashchange fires, so read it for the live route
 const current = () => normalize(parseHash(location.hash), stages);
@@ -18,12 +18,13 @@ let route = current();
 let lastStage = null;   // stage id shown last, or null on the landing
 let lastPlace = null;   // "landing", a stage id, or a view name; null before the first render
 let keepFocus = false;  // true while a marker picked the stage, so focus stays on it
-let koanTimer = null;
 
 const ring = buildRing(ringEl, {
   stages,
   onSelect: (n) => { keepFocus = true; go({ view: "stage", stage: n, section: null, again: current().again }); },
 });
+
+const koan = createKoan(koanEl);
 
 const ctx = {
   lessons,
@@ -58,11 +59,6 @@ function renderLanding() {
   ]);
 }
 
-function clearKoan() {
-  clearTimeout(koanTimer);
-  koanEl.textContent = "";
-}
-
 function render() {
   route = current();
   // unknown stages, sections or views: fix the address bar in place (no new history entry, no hashchange)
@@ -75,6 +71,7 @@ function render() {
     viewEl.replaceChildren((VIEWS[route.view] ?? (() => el("p", {}, ["Coming soon."])))(ctx));
     window.scrollTo(0, 0);
     viewEl.querySelector("h2")?.focus({ preventScroll: true });
+    koan.clear();
     lastPlace = route.view; lastStage = null; keepFocus = false;
     return;
   }
@@ -86,16 +83,15 @@ function render() {
 
   stageEl.classList.toggle("in-stage", !atLanding);
   ring.setWorn(route.again);
+  ring.highlight(null); // a maxim's trace highlight must not outlive the panel that set it
   ring.setStage(route.stage);
   panelEl.replaceChildren(atLanding ? renderLanding() : renderStage(stage, ctx));
 
   if (moved) announceEl.textContent = atLanding ? "Zen Guitar" : stage.title;
-  if (atLanding) clearKoan();
-  else if (lastStage !== null && lastStage !== stage.id && ring.showKoan(stage.koan, KOAN_MS)) {
-    clearKoan();
-    koanEl.textContent = stage.koan;
-    koanTimer = setTimeout(() => { koanEl.textContent = ""; }, KOAN_MS);
-  }
+  // Every arrival at a stage, including the first one, gets its koan; moving between
+  // sections of the same stage does not.
+  if (atLanding) koan.clear();
+  else if (lastStage !== stage.id) koan.show(stage.koan);
   lastStage = atLanding ? null : stage.id;
   lastPlace = place;
 
