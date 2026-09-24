@@ -13,8 +13,9 @@ your cup.
 
 ## About the book and this project
 
-*Zen Guitar* is Philip Toshio Sudo's book, and every idea on this site is his.
-The text here is a study guide in my own words, paraphrased stage by stage. It
+*Zen Guitar* is Philip Toshio Sudo's book. The core study guide paraphrases its
+teachings stage by stage. Expandable companion notes and the guitar examples
+beside the illustrated connections are original commentary for this site. It
 is a map, not a substitute: the book is short and worth reading in full. Please
 buy it or borrow it from a library.
 
@@ -23,6 +24,20 @@ or endorsed by the author's estate or the publisher.
 
 Fonts: Source Serif 4 and Source Sans 3 by Adobe, latin subsets from @fontsource,
 under the SIL Open Font License; licences in `site/assets/fonts/`.
+
+## Quiet solitude
+
+Read at your own pace. Koans remain visible for the whole stage, with a compact
+belt ring and named stage links for orientation. Dualities open as simple native
+disclosures. Ten original line drawings connect images to their teachings;
+there is no matching game. Each main section offers an optional deeper example,
+and reflection never requires a response. There is no audio, scoring, timer,
+completion system or saved progress. Paper, ink and the risograph poster remain
+the visual foundation.
+
+The September 23 design and implementation documents are historical; this
+quiet-solitude direction supersedes their timed koans, flip cards and match game.
+The old `#/5/match` anchor remains valid for shared links.
 
 ## What's here
 

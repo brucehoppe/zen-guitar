@@ -53,7 +53,7 @@ function renderLanding() {
     el("p", { class: "stage-sub" }, ["A visual tour of the book by Philip Toshio Sudo"]),
     el("p", { class: "intro" }, [again
       ? "You have walked the ring once. The belt is a little softer; that is all that changes. Empty your cup and begin again."
-      : "Everyone in this dojo starts at white belt. Empty your cup each visit."]),
+      : "A quiet place to read, reflect and return to the guitar. Everyone in this dojo starts at white belt. Empty your cup each visit."]),
     el("p", { class: "hint" }, [el("button", { class: "begin", onclick: () => go({ view: "stage", stage: 1, section: null, tab: null, again }) }, [again ? "Begin again" : "Begin"]), el("span", { class: "needs-keys" }, [", or use the arrow keys."])]),
     el("figure", { class: "hero-fig" }, [
       el("img", { class: "hero", src: "./assets/hero.jpg", alt: "Rats of Chaos of Gridlock. A quiet porch with a guitar, a cushion and a cup of tea facing pine, mountains and a red sun; the CN Tower, a highway of traffic and amplifiers on the other side.", width: "640", height: "426", decoding: "async" }),
@@ -95,16 +95,21 @@ function render() {
   ring.setWorn(route.again);
   ring.highlight(null); // a maxim's trace highlight must not outlive the panel that set it
   ring.setStage(route.stage);
+  const orientation = $("ring-orientation");
+  orientation.replaceChildren(el("p", { class: "ring-stage" }, [atLanding ? "The five stages" : stage.subtitle]),
+    el("nav", { "aria-label": "Stages", class: "stage-links" }, stages.map((s) => el("a", {
+      href: buildHash({ view: "stage", stage: s.id, again: route.again }),
+      "aria-current": !atLanding && s.id === stage.id ? "step" : null,
+    }, [s.subtitle]))));
   panelEl.replaceChildren(atLanding ? renderLanding() : renderStage(stage, ctx));
 
-  // Every arrival at a stage, including the first one, gets its koan; moving between
-  // sections of the same stage does not. The koan is read once, with the title, through
+  // The koan stays visible throughout the stage. It is announced once on arrival through
   // #announce (the koan itself is not a live region), so screen readers hear one sentence,
   // not two. A first load that lands on a stage is announced too, so a deep link reads its koan.
   const newKoan = !atLanding && lastStage !== stage.id;
   if (moved || (lastPlace === null && !atLanding)) announceEl.textContent = atLanding ? "Zen Guitar" : newKoan ? `${stage.title}. ${stage.koan}` : stage.title;
-  if (atLanding) koan.clear();
-  else if (newKoan) koan.show(stage.koan);
+  if (atLanding) koan.show("Empty your cup.");
+  else koan.show(stage.koan);
   lastStage = atLanding ? null : stage.id;
   lastPlace = place;
 

@@ -30,7 +30,7 @@ export function renderPractice(ctx) {
   return el("article", { class: "view-inner" }, [
     backLink(ctx.lastStage),
     el("h2", { class: "stage-title", tabindex: "-1" }, ["Practice"]),
-    el("p", { class: "stage-sub" }, ["The book gives almost no explicit exercises, but many of its images convert directly into practice. A rotating menu, not a checklist."]),
+    el("p", { class: "stage-sub" }, ["Invitations drawn from the book’s images. Choose something that speaks to you, and give it whatever space you wish."]),
     ...groups,
   ]);
 }
