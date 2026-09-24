@@ -348,3 +348,16 @@ test("renderWheel lists the point names, numbered, and a name selects its spoke"
   assert.match(w.querySelector(".wheel-detail").textContent, /Core 8/);
   assert.equal(w.querySelectorAll("g[role=\"button\"]")[7].getAttribute("aria-pressed"), "true");
 });
+
+test("Glossary and Practice show a back link to the last stage only when one was visited", () => {
+  const base = { ...ctx, glossary: [{ term: "Mu", literal: "No-thing", usage: "The void." }], exercises: [] };
+  for (const render of [renderGlossary, renderPractice]) {
+    const withStage = render({ ...base, lastStage: { title: "Black Belt", href: "#/3/key-ideas" } });
+    const back = withStage.querySelector("a.back-link");
+    assert.ok(back, render.name);
+    assert.equal(back.textContent, "← Back to Black Belt");
+    assert.equal(back.getAttribute("href"), "#/3/key-ideas");
+    assert.equal(withStage.children[0], back, "the link sits above the title");
+    assert.equal(render({ ...base, lastStage: null }).querySelector("a.back-link"), null, `${render.name} without a stage`);
+  }
+});

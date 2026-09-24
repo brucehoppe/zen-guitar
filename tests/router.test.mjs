@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseHash, buildHash, normalize, nextStage, prevStage, canonicalHash } from "../site/router.js";
+import { parseHash, buildHash, normalize, nextStage, prevStage, canonicalHash, homeHref } from "../site/router.js";
 
 const stages = [1, 2, 3, 4, 5].map((id) => ({ id, sections: [{ id: "a" }, { id: "b" }] }));
 
@@ -58,4 +58,11 @@ test("canonicalHash rewrites unknown stages, sections and views, and leaves cano
     assert.equal(canonicalHash(h, stages), null, `${h} is already canonical`);
   }
   for (const h of ["", "#", "#/"]) assert.equal(canonicalHash(h, stages), null, `"${h}" is the landing and stays as typed`);
+});
+
+test("homeHref returns to the last stage only from Glossary or Practice", () => {
+  assert.equal(homeHref("glossary", "#/3"), "#/3");
+  assert.equal(homeHref("practice", "#/2/missteps?again"), "#/2/missteps?again");
+  assert.equal(homeHref("glossary", null), "#/", "no stage visited yet");
+  assert.equal(homeHref("stage", "#/3"), "#/", "on stages and the landing it stays the landing");
 });

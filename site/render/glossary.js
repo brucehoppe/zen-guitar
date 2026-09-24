@@ -1,5 +1,5 @@
 // site/render/glossary.js
-import { el, kanji } from "./dom.js";
+import { el, kanji, backLink } from "./dom.js";
 
 export function renderGlossary(ctx) {
   const rows = ctx.glossary.map((g) => el("tr", { "data-term": g.term.toLowerCase() }, [
@@ -18,6 +18,7 @@ export function renderGlossary(ctx) {
     status.textContent = visible === 0 ? "No terms match" : `${visible} term${visible === 1 ? "" : "s"}`;
   });
   return el("article", { class: "view-inner" }, [
+    backLink(ctx.lastStage),
     el("h2", { class: "stage-title", tabindex: "-1" }, ["Glossary"]),
     el("p", { class: "stage-sub" }, ["The Japanese and Chinese terms the book leans on."]),
     el("label", { class: "filter-label", for: "glossary-filter" }, ["Filter terms"]),

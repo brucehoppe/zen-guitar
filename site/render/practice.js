@@ -1,5 +1,5 @@
 // site/render/practice.js
-import { el } from "./dom.js";
+import { el, backLink } from "./dom.js";
 
 const BELTS = [["white", "White belt"], ["practice", "Practice stage"], ["black", "Black belt"], ["barrier", "Barrier"]];
 
@@ -27,6 +27,7 @@ export function renderPractice(ctx) {
     ]);
   }).filter(Boolean);
   return el("article", { class: "view-inner" }, [
+    backLink(ctx.lastStage),
     el("h2", { class: "stage-title", tabindex: "-1" }, ["Practice"]),
     el("p", { class: "stage-sub" }, ["The book gives almost no explicit exercises, but many of its images convert directly into practice. A rotating menu, not a checklist."]),
     ...groups,

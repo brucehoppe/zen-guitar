@@ -1,6 +1,6 @@
 // site/app.js
 import { stages, lessons, exercises, maxims, glossary } from "./content/index.js";
-import { parseHash, buildHash, normalize, nextStage, prevStage, canonicalHash } from "./router.js";
+import { parseHash, buildHash, normalize, nextStage, prevStage, canonicalHash, homeHref } from "./router.js";
 import { buildRing } from "./belt.js";
 import { createKoan } from "./koan.js";
 import { renderStage } from "./render/panel.js";
@@ -11,6 +11,7 @@ import { el } from "./render/dom.js";
 const $ = (id) => document.getElementById(id);
 const ringEl = $("ring"), panelEl = $("panel"), viewEl = $("view"), koanEl = $("koan"), announceEl = $("announce"), stageEl = document.querySelector(".stage");
 const navLinks = [...document.querySelectorAll(".top-nav a")];
+const homeLink = document.querySelector(".top-home");
 
 // location.hash updates as soon as it is set, before hashchange fires, so read it for the live route
 const current = () => normalize(parseHash(location.hash), stages);
@@ -18,6 +19,7 @@ let route = current();
 let lastStage = null;   // stage id shown last, or null on the landing
 let lastPlace = null;   // "landing", a stage id, or a view name; null before the first render
 let keepFocus = false;  // true while a marker picked the stage, so focus stays on it
+let lastStageRoute = null; // hash of the stage last shown this visit (memory only, never stored)
 
 const ring = buildRing(ringEl, {
   stages,
@@ -65,6 +67,10 @@ function render() {
   const canonical = canonicalHash(location.hash, stages);
   if (canonical) history.replaceState(null, "", canonical);
   navLinks.forEach((a) => a.setAttribute("aria-current", a.getAttribute("href") === `#/${route.view}` ? "page" : "false"));
+  if (route.view === "stage" && !route.landing) lastStageRoute = buildHash(route);
+  homeLink.setAttribute("href", homeHref(route.view, lastStageRoute));
+  const lastStageDef = lastStageRoute ? stages.find((s) => s.id === parseHash(lastStageRoute).stage) : null;
+  ctx.lastStage = lastStageDef ? { title: lastStageDef.title, href: lastStageRoute } : null;
 
   if (route.view !== "stage") {
     stageEl.hidden = true; viewEl.hidden = false;
@@ -95,7 +101,11 @@ function render() {
   lastStage = atLanding ? null : stage.id;
   lastPlace = place;
 
-  if (route.section) document.getElementById(`sec-${route.section}`)?.scrollIntoView({ block: "start" });
+  if (route.section) {
+    // A lesson link lands on its section: scroll there and put focus on its heading.
+    const h = document.getElementById(`sec-${route.section}`);
+    if (h) { h.setAttribute("tabindex", "-1"); h.scrollIntoView({ block: "start" }); h.focus({ preventScroll: true }); }
+  }
   else if (moved) {
     window.scrollTo(0, 0);
     if (!keepFocus) panelEl.querySelector(atLanding ? "h1" : "h2")?.focus({ preventScroll: true });

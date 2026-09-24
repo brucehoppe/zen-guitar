@@ -47,3 +47,10 @@ export function nextStage(n) {
 export function prevStage(n) {
   return n <= 1 ? { stage: STAGES, again: false } : { stage: n - 1, again: false };
 }
+
+// Where the "Zen Guitar" home link points. On the landing and on stages it is the
+// landing; from Glossary or Practice it returns to the stage last visited (held in
+// memory only, for this visit), or the landing if no stage was visited yet.
+export function homeHref(view, lastStageRoute) {
+  return view !== "stage" && lastStageRoute ? lastStageRoute : "#/";
+}

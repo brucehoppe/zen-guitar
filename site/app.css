@@ -111,6 +111,9 @@ a { color: var(--accent-text); }
 .plain { padding-left: 1.1em; } .plain li { margin: .6rem 0; }
 .recall { border-top: 1px solid var(--rule); padding: 8px 0; } .recall summary { cursor: pointer; }
 .muted { color: var(--muted); }
+.back-link { display: inline-block; font: 1rem var(--sans); color: var(--accent-text); text-decoration: none; padding: .4rem 0; margin: 0 0 .5rem; }
+.back-link:hover, .back-link:focus-visible { text-decoration: underline; text-underline-offset: .2em; }
+.sec-h:focus { outline: none; } /* focused by script after a lesson link, not a control */
 
 /* belt stops in dark mode; light mode keeps the wornStops colours set by setWorn */
 @media (prefers-color-scheme: dark) {

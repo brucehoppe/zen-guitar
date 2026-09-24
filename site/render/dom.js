@@ -23,3 +23,8 @@ export function heading(section) {
 export function kanji(text) {
   return text ? el("span", { lang: "ja", class: "kanji", "aria-hidden": "true" }, [text]) : null;
 }
+
+// "← Back to <stage>" above a view's title, when a stage was visited this visit.
+export function backLink(lastStage) {
+  return lastStage ? el("a", { class: "back-link", href: lastStage.href }, [`← Back to ${lastStage.title}`]) : null;
+}
