@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseHash, buildHash, normalize, nextStage, prevStage } from "../site/router.js";
+import { parseHash, buildHash, normalize, nextStage, prevStage, canonicalHash } from "../site/router.js";
 
 const stages = [1, 2, 3, 4, 5].map((id) => ({ id, sections: [{ id: "a" }, { id: "b" }] }));
 
@@ -46,4 +46,16 @@ test("an empty path is the landing, with or without again", () => {
   assert.equal(parseHash("#/1").landing, false);
   assert.equal(buildHash({ view: "stage", stage: 1, section: null, again: true, landing: true }), "#/?again");
   assert.deepEqual(normalize(parseHash("#/?again"), stages), { view: "stage", stage: 1, section: null, again: true, landing: true });
+});
+
+test("canonicalHash rewrites unknown stages, sections and views, and leaves canonical hashes alone", () => {
+  assert.equal(canonicalHash("#/9/zzz", stages), "#/1");
+  assert.equal(canonicalHash("#/2/nothing", stages), "#/2");
+  assert.equal(canonicalHash("#/2/b?again&x", stages), "#/2/b?again");
+  assert.equal(canonicalHash("#/glossary/extra", stages), "#/glossary");
+  assert.equal(canonicalHash("#/zzz", stages), "#/1");
+  for (const h of ["#/2", "#/2/b", "#/3?again", "#/glossary", "#/practice", "#/?again"]) {
+    assert.equal(canonicalHash(h, stages), null, `${h} is already canonical`);
+  }
+  for (const h of ["", "#", "#/"]) assert.equal(canonicalHash(h, stages), null, `"${h}" is the landing and stays as typed`);
 });

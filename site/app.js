@@ -1,6 +1,6 @@
 // site/app.js
 import { stages, lessons, exercises, maxims, glossary } from "./content/index.js";
-import { parseHash, buildHash, normalize, nextStage, prevStage } from "./router.js";
+import { parseHash, buildHash, normalize, nextStage, prevStage, canonicalHash } from "./router.js";
 import { buildRing } from "./belt.js";
 import { renderStage } from "./render/panel.js";
 import { renderGlossary } from "./render/glossary.js";
@@ -11,6 +11,11 @@ const $ = (id) => document.getElementById(id);
 const ringEl = $("ring"), panelEl = $("panel"), viewEl = $("view"), koanEl = $("koan"), announceEl = $("announce"), stageEl = document.querySelector(".stage");
 const navLinks = [...document.querySelectorAll(".top-nav a")];
 const KOAN_MS = 1200;
+// From 820px the ring shows the koan itself, so the HTML koan only speaks to screen readers.
+const wide = window.matchMedia("(min-width: 820px)");
+const syncKoan = () => koanEl.classList.toggle("visually-hidden", wide.matches);
+wide.addEventListener("change", syncKoan);
+syncKoan();
 
 // location.hash updates as soon as it is set, before hashchange fires, so read it for the live route
 const current = () => normalize(parseHash(location.hash), stages);
@@ -65,6 +70,9 @@ function clearKoan() {
 
 function render() {
   route = current();
+  // unknown stages, sections or views: fix the address bar in place (no new history entry, no hashchange)
+  const canonical = canonicalHash(location.hash, stages);
+  if (canonical) history.replaceState(null, "", canonical);
   navLinks.forEach((a) => a.setAttribute("aria-current", a.getAttribute("href") === `#/${route.view}` ? "page" : "false"));
 
   if (route.view !== "stage") {
@@ -85,7 +93,6 @@ function render() {
   ring.setWorn(route.again);
   ring.setStage(route.stage);
   panelEl.replaceChildren(atLanding ? renderLanding() : renderStage(stage, ctx));
-  panelEl.setAttribute("data-emblem", atLanding ? "" : stage.emblem);
 
   if (moved) announceEl.textContent = atLanding ? "Zen Guitar" : stage.title;
   if (atLanding) clearKoan();

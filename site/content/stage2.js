@@ -10,7 +10,7 @@ export const stage2 = {
   sections: [
     {
       type: "wheel", id: "points", heading: "The twelve points of focus",
-      hub: { term: "shugyo", kanji: "修行", gloss: "training without end" },
+      hub: { term: "shugyo" },
       items: [
         { lesson: "spirit", name: "Spirit", core: "Guitar is physical training. Pain, fatigue and self-doubt are where the mind grows strong.", image: "Three samurai adages: Don't ask, practice. Seven times down, eight times up. The only opponent is within." },
         { lesson: "rhythm", name: "Rhythm", core: "Anyone with a heartbeat has rhythm. Feel it in the body, not the mind, and lock your pulse to others'.", image: "Hyoshi, \"child's clap\": an audience slowly clapping in unison." },

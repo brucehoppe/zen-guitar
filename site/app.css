@@ -41,8 +41,8 @@ a { color: var(--accent-text); }
 .stage { display: grid; grid-template-columns: minmax(280px, 420px) 1fr; gap: 32px; align-items: start; padding: 0 var(--gutter) 40px; max-width: 1100px; margin: 0 auto; }
 .ring-wrap { position: sticky; top: 16px; }
 #ring { width: 100%; height: auto; display: block; transition: transform var(--ease); }
-.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; }
 .koan { text-align: center; font-style: italic; color: var(--muted); min-height: 1.6em; margin: 6px 0 0; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; min-height: 0; }
 .panel { min-width: 0; }
 .view { padding: 0 var(--gutter) 40px; max-width: 760px; margin: 0 auto; }
 .view[hidden], .stage[hidden] { display: none; }
@@ -98,8 +98,7 @@ a { color: var(--accent-text); }
 }
 @media (min-width: 820px) {
   .stage.in-stage { grid-template-columns: minmax(220px, 300px) 1fr; }
-  /* the HTML koan only speaks to screen readers here; the ring shows the koan */
-  .koan { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; }
+  /* the HTML koan gets .visually-hidden here from app.js; the ring shows the koan */
 }
 @media (max-width: 819px) {
   .koan-svg { display: none; }

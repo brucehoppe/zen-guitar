@@ -31,6 +31,15 @@ export function normalize(route, stages) {
   return { view: "stage", stage, section, again: Boolean(route.again), landing: false };
 }
 
+// The hash to rewrite the address bar to, or null when it is already canonical.
+// "", "#" and "#/" are all the landing and are left as typed.
+export function canonicalHash(hash, stages) {
+  const h = String(hash || "");
+  if (h === "" || h === "#" || h === "#/") return null;
+  const canonical = buildHash(normalize(parseHash(h), stages));
+  return canonical === h ? null : canonical;
+}
+
 export function nextStage(n) {
   return n >= STAGES ? { stage: 1, again: true } : { stage: n + 1, again: false };
 }

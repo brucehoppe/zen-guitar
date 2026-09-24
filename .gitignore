@@ -7,3 +7,6 @@ node_modules/
 
 # Brainstorming mockups
 .superpowers/
+
+# Source artwork (originals kept locally)
+zen_guitar/*.png
