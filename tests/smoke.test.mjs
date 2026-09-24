@@ -95,3 +95,20 @@ test("the landing carries the captioned hero poster with alt text and a relative
   const outside = js.replace(landing[0], "");
   assert.doesNotMatch(outside, /class:\s*"hero/, "the hero belongs to the landing only");
 });
+
+// Everything on the page follows the rem type scale. The only px font sizes left are
+// SVG text (where px means viewBox user units, so they scale with the graphic) and the
+// faint emblem kanji, which is decoration sized with clamp().
+test("app.css sets no HTML font size in px", async () => {
+  const css = await readFile(new URL("../site/app.css", import.meta.url), "utf8");
+  const SVG_TEXT = /^\.(marker-n|koan-svg|wheel-hub-t|spoke-label|spoke-index)$/;
+  const offenders = [];
+  for (const [, selectors, body] of css.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    const decls = body.split(";").filter((d) => /^\s*font(-size)?\s*:/.test(d) && /\d(\.\d+)?px/.test(d));
+    if (!decls.length) continue;
+    const sels = selectors.split(",").map((s) => s.trim().split(/\s+/).pop());
+    if (sels.every((s) => SVG_TEXT.test(s) || s === ".emblem")) continue;
+    offenders.push(`${selectors.trim()} { ${decls.join(";").trim()} }`);
+  }
+  assert.deepEqual(offenders, []);
+});
