@@ -65,16 +65,33 @@ test("app.css zeroes motion under prefers-reduced-motion", async () => {
   assert.match(block, /animation-duration:\s*0ms/);
 });
 
-test("the landing carries the hero poster with alt text and a relative src, and no stage does", async () => {
+test("the landing carries the captioned hero poster with alt text and a relative src, and no stage does", async () => {
   const js = await readFile(new URL("../site/app.js", import.meta.url), "utf8");
   const landing = js.match(/function renderLanding\(\)\s*\{([\s\S]*?)\n\}/);
   assert.ok(landing, "renderLanding not found in app.js");
-  const img = landing[1].match(/el\("img",\s*\{([^}]*class:\s*"hero"[^}]*)\}/);
-  assert.ok(img, "renderLanding should build an img.hero");
+  const fig = landing[1].match(/el\("figure",\s*\{\s*class:\s*"hero-fig"\s*\},\s*\[([\s\S]*?)\n\s*\]\)/);
+  assert.ok(fig, "renderLanding should build a figure.hero-fig");
+  const img = fig[1].match(/el\("img",\s*\{([^}]*class:\s*"hero"[^}]*)\}/);
+  assert.ok(img, "the figure should hold an img.hero");
+  const cap = fig[1].match(/el\("figcaption",\s*\{\s*\},\s*\["([^"]+)"\]\)/);
+  assert.ok(cap && cap[1].trim(), "the figure should carry a non-empty figcaption");
   const attr = (name) => img[1].match(new RegExp(`\\b${name}:\\s*"([^"]*)"`))?.[1];
   assert.ok(attr("alt")?.trim(), "hero needs a non-empty alt");
+  assert.equal(attr("loading"), undefined, "the hero is not lazy-loaded");
   assert.match(attr("src") ?? "", /^\.\/[^/]/, "hero src must be relative (./…)");
-  await access(new URL(`../site/${attr("src").slice(2)}`, import.meta.url));
+
+  // width/height attributes match the JPEG's real pixel size (read from its SOF marker)
+  const jpg = await readFile(new URL(`../site/${attr("src").slice(2)}`, import.meta.url));
+  assert.ok(jpg.length <= 120 * 1024, `hero.jpg should be at most 120 KB, is ${jpg.length} bytes`);
+  let w, h;
+  for (let p = 2; p < jpg.length;) {
+    const marker = jpg[p + 1], len = jpg.readUInt16BE(p + 2);
+    if (marker >= 0xc0 && marker <= 0xc3) { h = jpg.readUInt16BE(p + 5); w = jpg.readUInt16BE(p + 7); break; }
+    p += 2 + len;
+  }
+  assert.equal(attr("width"), String(w), "hero width attribute should match the file");
+  assert.equal(attr("height"), String(h), "hero height attribute should match the file");
+
   const outside = js.replace(landing[0], "");
-  assert.doesNotMatch(outside, /class:\s*"hero"/, "the hero belongs to the landing only");
+  assert.doesNotMatch(outside, /class:\s*"hero/, "the hero belongs to the landing only");
 });

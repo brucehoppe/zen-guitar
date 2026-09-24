@@ -51,7 +51,10 @@ function renderLanding() {
       ? "You have walked the ring once. The belt is a little softer; that is all that changes. Empty your cup and begin again."
       : "Everyone in this dojo starts at white belt. Empty your cup each visit."]),
     el("p", { class: "hint" }, [el("button", { class: "begin", onclick: () => go({ view: "stage", stage: 1, section: null, again }) }, [again ? "Begin again" : "Begin"]), " or press → to move around the belt."]),
-    el("img", { class: "hero", src: "./assets/hero.jpg", alt: "Rats of Chaos of Gridlock. A quiet porch with a guitar, a cushion and a cup of tea facing pine, mountains and a red sun; the CN Tower, a highway of traffic and amplifiers on the other side.", width: "1000", height: "667", loading: "lazy", decoding: "async" }),
+    el("figure", { class: "hero-fig" }, [
+      el("img", { class: "hero", src: "./assets/hero.jpg", alt: "Rats of Chaos of Gridlock. A quiet porch with a guitar, a cushion and a cup of tea facing pine, mountains and a red sun; the CN Tower, a highway of traffic and amplifiers on the other side.", width: "640", height: "426", decoding: "async" }),
+      el("figcaption", {}, ["Poster: Rats of Chaos of Gridlock. Practice, listen, tune, play, repeat."]),
+    ]),
   ]);
 }
 

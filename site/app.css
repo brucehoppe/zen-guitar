@@ -71,7 +71,9 @@ a { color: var(--accent-text); }
 .intro { font-size: 17px; }
 .hint { font-family: var(--sans); font-size: 14px; color: var(--muted); }
 .begin { font: italic 16px var(--serif); color: var(--accent-text); background: none; border: 0; padding: 0; cursor: pointer; }
-.hero { display: block; width: 100%; height: auto; margin-top: 24px; border: 1px solid var(--rule); }
+.hero-fig { margin: 28px 0 0; max-width: 280px; }
+.hero-fig img { display: block; width: 100%; height: auto; border: 1px solid var(--rule); }
+.hero-fig figcaption { font: 12px/1.4 var(--sans); color: var(--muted); margin-top: 6px; }
 .sec { margin: 28px 0; }
 .sec-h { font: 600 12px/1 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
 .tbl { border-collapse: collapse; width: 100%; font-size: 15px; }

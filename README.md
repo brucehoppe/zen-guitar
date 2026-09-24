@@ -43,6 +43,8 @@ python3 -m http.server 8000 --directory site
 
 Then open http://localhost:8000/.
 
+After pulling changes, hard-reload the page (Cmd+Shift+R) so the browser doesn't mix cached modules.
+
 ## Tests
 
 ```bash
