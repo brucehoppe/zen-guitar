@@ -48,7 +48,7 @@ After pulling changes, hard-reload the page (Cmd+Shift+R) so the browser doesn't
 ## Tests
 
 ```bash
-node --test tests/
+node --test "tests/*.test.mjs"
 ```
 
 ## Licence
