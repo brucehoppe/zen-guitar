@@ -11,11 +11,6 @@ const $ = (id) => document.getElementById(id);
 const ringEl = $("ring"), panelEl = $("panel"), viewEl = $("view"), koanEl = $("koan"), announceEl = $("announce"), stageEl = document.querySelector(".stage");
 const navLinks = [...document.querySelectorAll(".top-nav a")];
 const KOAN_MS = 1200;
-// From 820px the ring shows the koan itself, so the HTML koan only speaks to screen readers.
-const wide = window.matchMedia("(min-width: 820px)");
-const syncKoan = () => koanEl.classList.toggle("visually-hidden", wide.matches);
-wide.addEventListener("change", syncKoan);
-syncKoan();
 
 // location.hash updates as soon as it is set, before hashchange fires, so read it for the live route
 const current = () => normalize(parseHash(location.hash), stages);
