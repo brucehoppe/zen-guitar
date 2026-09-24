@@ -33,9 +33,9 @@ body::before {
   *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
 }
 * { box-sizing: border-box; }
-/* One fluid type scale: 1rem is 18px on phones, growing to 22px on large monitors.
+/* One fluid type scale: 1rem is 18px on phones, growing to about 22px from 1920px wide (22.4px cap).
    Every font size below is in rem (or SVG user units), so it all scales together. */
-html { font-size: clamp(1.125rem, 1rem + 0.3vw, 1.375rem); }
+html { font-size: clamp(1.125rem, 1rem + 0.32vw, 1.4rem); }
 html, body { margin: 0; background: var(--paper); color: var(--ink); }
 body { font: 1rem/1.65 var(--serif); }
 p { margin: 0 0 1em; }
