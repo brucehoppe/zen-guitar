@@ -1,3 +1,7 @@
+// The wheel is drawn in a 340-unit viewBox. OUTER leaves room outside the rim for the
+// 12.5-unit spoke labels (see .spoke-label in app.css and tests/wheel-geometry.test.mjs).
+export const WHEEL = { size: 340, cx: 170, cy: 170, inner: 34, outer: 105 };
+
 export function spokes(count, inner, outer, cx, cy) {
   return Array.from({ length: count }, (_, i) => {
     const angle = (360 / count) * i;

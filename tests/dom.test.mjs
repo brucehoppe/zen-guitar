@@ -335,3 +335,13 @@ test("match's completion text is hard-coded and the grid marks itself complete",
   assert.equal(m.querySelector(".match-status").textContent, "All ten. Now go play.");
   assert.ok(grid.classList.contains("is-complete"));
 });
+
+test("renderWheel lists the point names, numbered, and a name selects its spoke", () => {
+  const w = renderWheel({ type: "wheel", id: "points", heading: "Twelve", hub: { term: "shugyo" }, items: wheelItems }, wheelCtx);
+  const legend = w.querySelector("ol.wheel-legend");
+  assert.equal(legend.children.length, 12);
+  assert.equal(legend.children[3].textContent, "Point 4");
+  legend.children[7].querySelector("button").dispatch("click");
+  assert.match(w.querySelector(".wheel-detail").textContent, /Core 8/);
+  assert.equal(w.querySelectorAll("g[role=\"button\"]")[7].getAttribute("aria-pressed"), "true");
+});

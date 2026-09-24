@@ -1,18 +1,19 @@
 import { el, svg, heading } from "./dom.js";
-import { spokes, splitLabel } from "./wheel-geometry.js";
+import { spokes, splitLabel, WHEEL } from "./wheel-geometry.js";
 
-const CX = 170, CY = 170, INNER = 34, OUTER = 120;
+const { cx: CX, cy: CY, inner: INNER, outer: OUTER, size: SIZE } = WHEEL;
 
 export function renderWheel(section, ctx) {
   const detail = el("div", { class: "wheel-detail", "aria-live": "polite" }, [el("p", { class: "muted" }, ["Choose a spoke."])]);
   const geo = spokes(section.items.length, INNER, OUTER, CX, CY);
-  const root = svg("svg", { viewBox: "0 0 340 340", class: "wheel", role: "group", "aria-label": section.heading });
+  const root = svg("svg", { viewBox: `0 0 ${SIZE} ${SIZE}`, class: "wheel", role: "group", "aria-label": section.heading });
   root.append(
     svg("circle", { cx: CX, cy: CY, r: OUTER, class: "wheel-rim" }),
     svg("circle", { cx: CX, cy: CY, r: INNER, class: "wheel-hub" }),
     svg("text", { x: CX, y: CY + 4, class: "wheel-hub-t", "text-anchor": "middle" }, [section.hub.term]),
   );
   const groups = [];
+  const selectors = [];
   section.items.forEach((item, i) => {
     const g = geo[i];
     const grp = svg("g", { class: "spoke", role: "button", tabindex: "0", "aria-pressed": "false", "aria-label": `${i + 1}. ${item.name}` }, [
@@ -36,6 +37,7 @@ export function renderWheel(section, ctx) {
       ].filter(Boolean);
       detail.replaceChildren(...children);
     };
+    selectors.push(select);
     grp.addEventListener("click", () => {
       select();
       if (typeof detail.scrollIntoView === "function") detail.scrollIntoView({ block: "nearest" });
@@ -44,8 +46,15 @@ export function renderWheel(section, ctx) {
     groups.push(grp);
     root.append(grp);
   });
+  // On phones the rim shows only numbers, so the names are listed under the wheel,
+  // numbered to match. (Hidden by CSS from 481px, where the rim carries the names.)
+  const legend = el("ol", { class: "wheel-legend" }, section.items.map((item, i) =>
+    el("li", {}, [el("button", { type: "button", class: "wheel-legend-b", onclick: () => {
+      selectors[i]();
+      if (typeof detail.scrollIntoView === "function") detail.scrollIntoView({ block: "nearest" });
+    } }, [item.name])])));
   return el("section", { class: "sec sec-wheel", "aria-labelledby": `sec-${section.id}` }, [
     heading(section),
-    el("div", { class: "wheel-wrap" }, [root, detail]),
+    el("div", { class: "wheel-wrap" }, [el("div", { class: "wheel-fig" }, [root, legend]), detail]),
   ]);
 }
