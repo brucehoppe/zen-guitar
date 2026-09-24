@@ -3,7 +3,7 @@
 ![Rats of Chaos of Gridlock. A two-ink poster: on the left a quiet porch with a guitar, a cushion and a steaming cup of tea, facing pine, mountains and a red sun; on the right the CN Tower, a highway of traffic and stacked amplifiers. Practice, listen, tune, play, repeat.](docs/images/rats-of-chaos-poster.jpg)
 
 
-**Live demo:** https://brucehoppe.github.io/zen-guitar/ (coming once the site is built)
+**Live demo:** https://brucehoppe.github.io/zen-guitar/
 
 A visual tour of *Zen Guitar* by **Philip Toshio Sudo** (Simon & Schuster, 1997),
 built as a belt you walk around: white belt, white to black, black belt, black to
@@ -26,13 +26,16 @@ under the SIL Open Font License; licences in `site/assets/fonts/`.
 
 ## What's here
 
+- `site/` — the static site: `index.html`, `app.css`, `app.js`, pure modules `router.js` and `ring.js`, the belt ring in `belt.js`, stage emblems in `emblems.js`, the content files under `content/`, one renderer per section type under `render/`, and the poster, icon and self-hosted fonts under `assets/`
+- `tests/` — Node's built-in test runner; covers routing, ring and wheel geometry, every renderer's structure and roles, the content's integrity (counts and lesson cross-references), the page's contrast and reduced-motion rules, and the deploy step that versions module URLs
 - `zen_guitar/Zen-Guitar-Study-Guide.md` — the study guide the site is built from
-- `docs/superpowers/specs/` — the design spec for the site
-- `site/` — the static site (in progress)
+- `docs/superpowers/` — the design spec and the implementation plan
+- `docs/images/` — the poster shown above
+- `scripts/fetch-fonts.sh` — fetches the Source Serif 4 and Source Sans 3 subsets into `site/assets/fonts/`
 
 ## Running locally
 
-The site is static files with no build step. Once `site/` exists:
+The site is static files with no build step:
 
 ```bash
 python3 -m http.server 8000 --directory site
