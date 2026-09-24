@@ -20,6 +20,7 @@ let lastStage = null;   // stage id shown last, or null on the landing
 let lastPlace = null;   // "landing", a stage id, or a view name; null before the first render
 let keepFocus = false;  // true while a marker picked the stage, so focus stays on it
 let lastStageRoute = null; // hash of the stage last shown this visit (memory only, never stored)
+let lastAgain = false;     // whether the ring was last seen on a second walk, landing included
 
 const ring = buildRing(ringEl, {
   stages,
@@ -68,8 +69,9 @@ function render() {
   if (canonical) history.replaceState(null, "", canonical);
   navLinks.forEach((a) => a.setAttribute("aria-current", a.getAttribute("href") === `#/${route.view}` ? "page" : "false"));
   if (route.view === "stage" && !route.landing) lastStageRoute = buildHash(route);
-  // On a view, "again" rides on the stage route we came from, so links back keep the worn belt.
-  ctx.again = route.view === "stage" ? route.again : Boolean(lastStageRoute && parseHash(lastStageRoute).again);
+  // On a view, "again" is whatever the ring last showed, so links back keep the worn belt.
+  if (route.view === "stage") lastAgain = route.again;
+  ctx.again = lastAgain;
   homeLink.setAttribute("href", homeHref(route.view, lastStageRoute, ctx.again));
   const lastStageDef = lastStageRoute ? stages.find((s) => s.id === parseHash(lastStageRoute).stage) : null;
   ctx.lastStage = lastStageDef ? { title: lastStageDef.title, href: lastStageRoute } : null;
@@ -97,9 +99,10 @@ function render() {
 
   // Every arrival at a stage, including the first one, gets its koan; moving between
   // sections of the same stage does not. The koan is read once, with the title, through
-  // #announce (the only live region), so screen readers hear one sentence, not two.
+  // #announce (the koan itself is not a live region), so screen readers hear one sentence,
+  // not two. A first load that lands on a stage is announced too, so a deep link reads its koan.
   const newKoan = !atLanding && lastStage !== stage.id;
-  if (moved) announceEl.textContent = atLanding ? "Zen Guitar" : newKoan ? `${stage.title}. ${stage.koan}` : stage.title;
+  if (moved || (lastPlace === null && !atLanding)) announceEl.textContent = atLanding ? "Zen Guitar" : newKoan ? `${stage.title}. ${stage.koan}` : stage.title;
   if (atLanding) koan.clear();
   else if (newKoan) koan.show(stage.koan);
   lastStage = atLanding ? null : stage.id;

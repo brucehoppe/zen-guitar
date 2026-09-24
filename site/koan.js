@@ -1,5 +1,5 @@
 // site/koan.js
-// The koan is one line of HTML under the ring (#koan, an aria-live region). It waits for
+// The koan is one line of HTML under the ring (#koan; app.js announces it through #announce). It waits for
 // the ring to finish turning, fades in, holds long enough to read, then fades out.
 // afterTurn matches --ease in app.css; fadeIn and fadeOut match the .koan transitions.
 export const KOAN_TIMING = { afterTurn: 400, fadeIn: 400, hold: 3500, fadeOut: 600 };

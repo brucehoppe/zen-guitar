@@ -99,7 +99,7 @@ a { color: var(--accent-text); }
    touch wording appears instead. */
 .touch-only { display: none; }
 @media (hover: none) and (pointer: coarse) { .needs-keys, .needs-pointer { display: none; } .touch-only { display: inline; } }
-.noscript { width: var(--page); margin: 1rem auto; font-family: var(--sans); }
+.noscript { font-family: var(--sans); }
 .begin { font: italic 1rem var(--serif); color: var(--accent-text); background: none; border: 0; padding: 0; cursor: pointer; }
 .hero-fig { margin: 28px 0 0; max-width: 18rem; }
 .hero-fig img { display: block; width: 100%; height: auto; border: 1px solid var(--rule); }

@@ -27,7 +27,7 @@ under the SIL Open Font License; licences in `site/assets/fonts/`.
 ## What's here
 
 - `site/` — the static site: `index.html`, `app.css`, `app.js`, pure modules `router.js` and `ring.js`, the belt ring in `belt.js`, stage emblems in `emblems.js`, the content files under `content/`, one renderer per section type under `render/`, and the poster, icon and self-hosted fonts under `assets/`
-- `tests/` — Node's built-in test runner; covers routing, ring and wheel geometry, every renderer's structure and roles, the content's integrity (counts and lesson cross-references), the page's contrast and reduced-motion rules, and the deploy step that versions module URLs
+- `tests/` — Node's built-in test runner; covers routing, ring and wheel geometry, every renderer's structure and roles, the content's integrity (counts and lesson cross-references), the page's contrast and reduced-motion rules, and the deploy step that versions module URLs and the poster
 - `zen_guitar/Zen-Guitar-Study-Guide.md` — the study guide the site is built from
 - `docs/superpowers/` — the design spec and the implementation plan
 - `docs/images/` — the poster shown above
