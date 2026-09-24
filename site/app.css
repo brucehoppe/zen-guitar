@@ -105,7 +105,7 @@ a { color: var(--accent-text); }
 .tbl th, .tbl td { text-align: left; vertical-align: top; padding: 8px 10px 8px 0; border-top: 1px solid var(--rule); }
 .tbl thead th { font: 600 .8rem var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); border-top: 0; }
 .tbl tbody th { font-weight: 500; width: 28%; }
-.steps { padding-left: 1.2em; } .steps li { margin: .9rem 0; }
+.steps { padding-left: 1.2em; } .steps .item-title { display: block; font-weight: 600; } .steps li { margin: .9rem 0; }
 .terms dt { font-weight: 500; margin-top: 10px; } .terms dd { margin: 2px 0 0; }
 .kanji { font-size: .9em; color: var(--muted); margin-left: .4em; }
 .plain { padding-left: 1.1em; } .plain li { margin: .6rem 0; }

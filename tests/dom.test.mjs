@@ -60,6 +60,8 @@ test("renderTable puts every cell in and tags lesson rows", () => {
 test("renderList handles steps (ordered) and terms (with kanji)", () => {
   const s = renderList({ type: "steps", id: "steps", heading: "Steps", items: [{ title: "Tune", text: "Get in tune." }] }, ctx);
   assert.equal(s.querySelector("ol").children.length, 1);
+  assert.equal(s.querySelector("strong.item-title").textContent, "Tune", "step title is its own block line");
+  assert.equal(s.querySelector("li").textContent, "TuneGet in tune.");
   const t = renderList({ type: "terms", id: "terms", heading: "Terms", items: [{ term: "Katsu", kanji: "喝", text: "A shout." }] }, ctx);
   assert.match(t.textContent, /喝/);
   assert.equal(t.querySelector("span[lang=\"ja\"]").textContent, "喝");
@@ -68,6 +70,7 @@ test("renderList handles steps (ordered) and terms (with kanji)", () => {
 test("renderList handles plain list type as a ul", () => {
   const l = renderList({ type: "list", id: "rules", heading: "Rules", items: [{ title: "Rule", text: "Follow it." }] }, ctx);
   assert.ok(l.querySelector("ul"), "plain list renders as a ul");
+  assert.equal(l.querySelector("li").textContent, "Rule. Follow it.", "title and text read as two sentences");
 });
 
 test("renderRecall keeps answers inside details", () => {

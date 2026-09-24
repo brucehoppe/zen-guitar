@@ -77,7 +77,7 @@ export const stage3 = {
   recall: [
     { q: "List the five responsibilities of a black belt.", a: "To yourself, to your talent, to your art, to your audience, and to the Way." },
     { q: "What are the three qualities of a musical statement, and what Japanese term names the second one?", a: "Character, content and concision. Content is kokoro ire, the heart's spirit put into each note." },
-    { q: "Distinguish intellect, instinct and intuition. Which does the book trust most, and why?", a: "Intellect calculates but is too slow; instinct reacts but can be fooled; intuition senses what has not yet happened. The book trusts intuition, which senses what has not yet happened." },
+    { q: "Distinguish intellect, instinct and intuition. Which does the book trust most, and why?", a: "Intellect calculates but is too slow; instinct reacts but can be fooled; intuition senses what has not yet happened. The book trusts intuition most, because it is neither too slow nor easily fooled." },
   ],
   reflection: [
     "What is your \"one thing\"? Can you describe your musical statement in a sentence without naming a genre or a technique?",

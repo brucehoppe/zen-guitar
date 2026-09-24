@@ -64,7 +64,7 @@ export const stage2 = {
   ],
   recall: [
     { q: "Name the three samurai adages under Spirit.", a: "Don't ask, practice. Seven times down, eight times up. The only opponent is within." },
-    { q: "What is the four-part definition of discipline, and which Zen story illustrates each part?", a: "Do what has to be done, when it has to be done, as well as it can be done, and that way every time. The images are Joshu's \"Then wash your bowl\", the karate master who replaced the bulb after class, and the butcher whose every cut is his best." },
+    { q: "What is the four-part definition of discipline, and which three images does the book use to illustrate it?", a: "Do what has to be done, when it has to be done, as well as it can be done, and that way every time. The images are Joshu's \"Then wash your bowl\", the karate master who replaced the bulb after class, and the butcher whose every cut is his best." },
     { q: "What is the difference between tempo, pacing, timing and quickness?", a: "Tempo is the song's road speed. Pacing is how you move within it. Timing is the exact moment to strike. Quickness is thought to action, without haste." },
     { q: "What are the three sources of criticism the book says to disregard?", a: "Taste, hindsight and ego." },
   ],

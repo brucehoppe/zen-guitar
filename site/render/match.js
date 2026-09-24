@@ -74,7 +74,7 @@ export function renderMatch(section, ctx) {
 
   const body = el("details", { class: "test-yourself" }, [
     el("summary", {}, ["Test yourself"]),
-    el("p", { class: "muted small" }, ["Choose an image, then the lesson it belongs to. Nothing is saved; a reload empties the cup."]),
+    el("p", { class: "muted small" }, ["Choose an image, then the lesson it belongs to."]),
     grid,
     status,
   ]);
